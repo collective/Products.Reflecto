@@ -21,7 +21,9 @@ a dot, or with '@@' are also deemed invalid. Files with names not matching
 these criteria will be ignored.
 
 This means that filenames must basically be ASCII characters only, and not
-start with 'aq_', '@@', '.' or '_', not end with '__' nor contain a '+'.
+start with ``aq_``, ``@@``, ``.`` or ``_``, not end with ``__`` nor
+contain a ``+``.
+  
   
 More information
 ================
@@ -31,7 +33,7 @@ For new releases please visit the `Reflecto product page`_ on plone.org.
 Please report bugs and feature requests in the `Reflecto issue tracker`_.
 
 
-.. _Reflecto product pagehttp://plone.org/products/reflecto
+.. _Reflecto product page: http://plone.org/products/reflecto
 .. _Reflecto issue tracker: http://plone.org/products/reflecto/issues
                                                      
 
