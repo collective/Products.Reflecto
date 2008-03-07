@@ -1,0 +1,49 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    xmlns:five="http://namespaces.zope.org/five"
+    xmlns:genericsetup="http://namespaces.zope.org/genericsetup"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    i18n_domain="reflect"
+    >
+
+<permission
+  id="Reflecto.AddReflectorFolder"
+  title="Add Reflector Folder"
+  />
+
+<permission
+  id="Reflecto.AddFilesystemObject"
+  title="Add Filesystem Object"
+  />
+
+<include package=".browser" />
+
+<genericsetup:registerProfile
+    name="default"
+    title="Reflecto: a window unto the filesystem"
+    description="Reflecto provides access to the filesystem from a Plone site"
+    directory="profiles/default"
+    provides="Products.GenericSetup.interfaces.EXTENSION"
+    for="Products.CMFCore.interfaces.ISiteRoot"
+    />
+
+<five:traversable class=".content.proxy.BaseProxy"/>
+
+<adapter
+    zcml:condition="installed Products.TextIndexNG3"
+    factory=".catalog.FileProxyIndexableContentAdapter"
+    />
+
+<subscriber
+    for=".interfaces.IReflector
+         zope.app.container.interfaces.IObjectMovedEvent"
+    handler=".events.ReflectorMovedHandler"
+    />
+
+<subscriber
+    for=".interfaces.IReflector
+         zope.app.container.interfaces.IObjectModifiedEvent"
+    handler=".events.ReflectorModifiedHandler"
+    />
+</configure>

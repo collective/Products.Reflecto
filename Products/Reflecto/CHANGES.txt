@@ -1,0 +1,55 @@
+2.0 (Unreleased)
+=========================
+
+- Port to Plone 3.
+  [wichert]
+
+- Add a 'life' option which makes Reflecto show life filesystem data instead
+  of catalogued data.
+  [wichert]
+
+- Correct the Plone version test. This fixes bug 11 (see
+  http://plone.org/products/reflecto/issues/11 ).
+  [wichert]
+
+
+1.2 (Released 2007/09/05)
+=========================
+
+- Changed the permission mask from 600 to 644
+  [FinnArild]
+
+- Issue #1: Include the Title in SearchableText.
+  [mj]
+
+- Issue #2: Add a SearchableText implementation for Directories, returing the
+  Title.
+  [mj]
+
+- Updated Install method to use the CMF 2.1 GenericSetup interface if Plone 3
+  is being used.
+  [wichert]
+
+- Updated imports which current Zope 3 deprecated
+  [wichert]
+
+- Updated tests to support Archetypes 1.5 as used by Plone 3.0
+  [wichert]
+
+- Updated @@index view mockup registration in directory tests for Plone 3.0
+  [mj]
+  
+- Fixed contents tab for Plone 3.0
+  [mj]
+
+1.1 (Released 2007/06/28)
+=========================
+
+- Fixed uploading files and directory creation in subdirectories
+  [mj]
+
+1.0 (Released 2007/06/27)
+=========================
+
+- Initial release 
+  [mj]

@@ -1,0 +1,14 @@
+from Products.Five.browser import BrowserView
+from Products.CMFPlone import Batch
+
+class LifeContents(BrowserView):
+
+    def __call__(self):
+        """getFolderContents alternative for life reflectors.
+        This should return brain-like objects.
+        """
+
+        return Batch(self.context.values(), 100, int(self.request.get("b_start", 0)), orphan=0)
+
+
+

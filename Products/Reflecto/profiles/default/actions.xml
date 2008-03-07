@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<object name="portal_actions" meta_type="Plone Actions Tool">
+ <action-provider name="portal_actions">
+  <action title="Upload file" action_id="upload" category="reflector_buttons"
+      condition_expr="" url_expr="string:@@add_file:method" visible="True">
+   <permission>Add Filesystem Object"</permission>
+  </action>
+  <action title="Create directory" action_id="createdir" category="reflector_buttons"
+      condition_expr="" url_expr="string:@@add_directory:method" visible="True">
+   <permission>Add Filesystem Object"</permission>
+  </action>
+ </action-provider>
+</object>

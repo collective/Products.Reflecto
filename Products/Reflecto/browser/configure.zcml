@@ -1,0 +1,42 @@
+<configure
+    xmlns="http://namespaces.zope.org/zope"
+    xmlns:zcml="http://namespaces.zope.org/zcml"
+    xmlns:browser="http://namespaces.zope.org/browser"
+    >
+
+  <browser:page
+      for="..interfaces.ILifeProxy"
+      name="getFolderContents"
+      class=".contents.LifeContents"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      for="..interfaces.IReflectoDirectory"
+      name="add_file"
+      class=".addfile.FileAddForm"
+      permission="Reflecto.AddFilesystemObject"
+      />
+      
+  <browser:page
+      for="..interfaces.IReflectoDirectory"
+      name="add_directory"
+      class=".adddirectory.DirectoryAddForm"
+      permission="Reflecto.AddFilesystemObject"
+      />
+      
+  <browser:page
+      for="..interfaces.IReflectoFile"
+      name="download"
+      class=".download.FileDownloadView"
+      permission="zope2.View"
+      />
+
+  <browser:page
+      for="..interfaces.IReflectoProxy"
+      name="index"
+      class=".index.IndexView"
+      permission="Reflecto.AddFilesystemObject"
+      allowed_interface="..interfaces.IIndexView"
+      />
+</configure>

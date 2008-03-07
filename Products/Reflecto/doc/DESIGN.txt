@@ -1,0 +1,134 @@
+===============
+Reflecto design
+===============
+
+The Reflecto design is build around three different components:
+
+- the Reflecto content type which acts as the bridge between the Plone site
+  and the filesystem
+
+- a directory proxy object which implements the required Zope interfaces
+  for a filesystem directory
+
+- a file proxy object which implements the required Zope interfaces for a
+  file on the filesystem
+
+The proxy objects have a registered FTI which makes it possible to view them
+using the standard CMF infrastructure.
+
+
+Basic proxy design
+==================
+
+Traversal
+---------
+
+Both Zope 2.9 (Five traversable) and 2.10 support traversing 
+through __getitem__, so a dict-like interface suffices.
+
+
+Copy, paste and renaming
+------------------------
+
+Copying, pasting and renamin g in Zope is implemented through the partially
+reimplementing the OFS ICopyContainer and ICopySource interfaces. Only Plone's
+use of these interfaces is really supported.
+
+We only want to allow copied objects to be pasted into the same filesystem
+hierarchy. This can be done through the notifyOfCopyTo method.
+
+
+Moving and deletion
+-------------------
+
+If a Reflecto object is moved or deleted we need to remove both the object and
+all the proxies filesystem objects underneath it that in are in the catalog.
+
+This can be done via the IObjectMoved event which is used for both moving
+and removing objects. The GoogleSATool product has example code in events.py
+which shows how this event can be used.
+
+To find all objects which should be used we can do a simple catalog query .
+
+
+Modifications
+--------------
+
+The Zope, CMF and Plone machinery to create content types is very flexible
+but also very complicated. Since our needs here are simple we will not
+use those but instead use simple browser views.
+
+We want to use seperate permissions for modifying filesystem objects
+
+
+Catalog proxy
+-------------
+
+Cataloging of filesystem objects is paramount: both to make the content
+searchable and to make it navigatable in Plone.
+
+Not all indexes and metadata will be relevant; we need to identify which
+ones we need to implement. For metadata the CMFCore IDublinCore and
+ICatalogableDublinCore interfaces are important.
+
+For some indexes and metadata we will rely on acquisition to get the right
+value from our parent:
+  
+  Language
+  Subject
+  Creator
+  EffectiveDate
+  ExpirationDate
+  start
+  end
+  review_state
+  expired
+
+
+Ids and filenames
+-----------------
+
+It is essential to have a one-to-one(-to-one) mapping between filenames, 
+Zope physical paths and URLs.
+
+Zope ids are a subset of valid URL paths as defined in RFC1738 we can
+focus purely on creating a valid Zope id.
+
+As a result we ignore and disallow files that do are not valid Zope ids. This
+means only ASCII filenames are supported.
+
+Title
+-----
+
+We will not provide a title to files & directories. This will make
+Plone fall back to the id which is what people will expect.
+
+Directory proxy
+===============
+
+Reflecto is a tool to incorporate part of the file system into a Plone site.
+It allows you to browse through a filesystem hierarchy and access the files
+in it. Files are represented as simple downloadable object, not as full CMF
+or Plone content types.
+
+
+Future directions
+=================
+
+* it may be interesting to add a multi-adapter for a file proxy object and
+  its content-type which can extract metadata from the file. 
+
+* it would be nice to add getIcon adapter to the file proxy class to
+  pick an icon based on mime type. This will only work on Plone 3.
+  
+* if filesystem filename-encoding can be reasonably detected we may be able
+  to support non-ASCII filenames by encoding filenames at the directory-proxy
+  level.
+  
+* Currently changes on the filesystem are not automatically detected.
+  We could use a filesystem monitor (such as `pyinotify`_ on Linux or the 
+  `ReadDirectoryChanges API`_ on Windows) to build a separate daemon that'd 
+  trigger re-indexing of Reflecto objects as changes take place.
+  
+.. _pyinotify: http://pyinotify.sourceforge.net/
+.. _ReadDirectoryChanges API: http://timgolden.me.uk/python/win32_how_do_i/watch_directory_for_changes.html

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<object name="ReflectoFile" meta_type="Factory-based Type Information"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title">Reflecto File</property>
+ <property
+    name="description">A Reflecto file.</property>
+ <property name="content_icon">file_icon.gif</property>
+ <property name="content_meta_type">RelfectoFile</property>
+ <property name="product">Reflecto</property>
+ <property name="factory">addReflectoFile</property>
+ <property name="immediate_view">reflecto_file_view</property>
+ <property name="global_allow">False</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types"/>
+ <property name="allow_discussion">False</property>
+ <alias from="(Default)" to="index_html"/>
+ <alias from="view" to="reflecto_file_view"/>
+ <action title="View" action_id="view" category="object" condition_expr=""
+    url_expr="string:${object_url}/reflecto_file_view" visible="True">
+  <permission value="View"/>
+ </action>
+</object>

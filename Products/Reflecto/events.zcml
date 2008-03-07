@@ -1,0 +1,15 @@
+<configure xmlns="http://namespaces.zope.org/zope">
+
+    <subscriber
+        for=".interfaces.IReflector
+             zope.app.container.interfaces.IObjectMovedEvent"
+        handler=".events.ReflectorMovedHandler"
+        />
+    
+    <subscriber
+        for=".interfaces.IReflector
+             zope.app.container.interfaces.IObjectModifiedEvent"
+        handler=".events.ReflectorModifiedHandler"
+        />
+
+</configure>

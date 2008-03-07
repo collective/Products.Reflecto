@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<object name="ReflectoDirectory" meta_type="Factory-based Type Information"
+   xmlns:i18n="http://xml.zope.org/namespaces/i18n">
+ <property name="title">ReflectoDirectory</property>
+ <property
+     name="description">A Reflecto Directory</property>
+ <property name="content_icon">folder_icon.gif</property>
+ <property name="content_meta_type">ReflectoDirectory</property>
+ <property name="product">Reflecto</property>
+ <property name="factory">addReflectoDirectory</property>
+ <property name="immediate_view">reflector_view</property>
+ <property name="global_allow">False</property>
+ <property name="filter_content_types">True</property>
+ <property name="allowed_content_types"/>
+ <property name="allow_discussion">False</property>
+ <alias from="(Default)" to="reflector_view"/>
+ <alias from="view" to="reflector_view"/>
+ <alias from="folder_contents" to="reflecto_folder_contents"/>
+ <action title="View" action_id="view" category="object" condition_expr=""
+    url_expr="string:${folder_url}/" visible="True">
+  <permission value="View"/>
+ </action>
+ <action title="Reindex" action_id="reindex" category="object"
+     condition_expr="" url_expr="string:${folder_url}/@@index" visible="True">
+  <permission value="Add Filesystem Object"/>
+ </action>
+ <action title="Folder Listing" action_id="folderlisting" category="folder"
+    condition_expr="" url_expr="string:${folder_url}/folder_listing"
+    visible="False">
+  <permission value="View"/>
+ </action>
+</object>
