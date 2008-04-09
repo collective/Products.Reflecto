@@ -8,7 +8,7 @@ from zope.formlib import form
 from Products.Five.formlib.formbase import FormBase
 from zope.app.form.interfaces import WidgetInputError
 from zope.schema.interfaces import ValidationError
-
+import os
 import os.path
 
 
@@ -53,7 +53,13 @@ class FileAddForm(FormBase):
         path=self.getFilePath(file)
         # We care about security so use O_CREAT|O_EXCL to prevent us
         # from hitting symlinks or other race attacks.
-        fd=os.open(path, os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0644)
+        try:
+            # For OSes which support it (Windows) we need to use the
+            # O_BINARY flag to prevent cr/lf rewriting.
+            flags=os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_BINARY
+        except AttributeError:
+            flags=os.O_WRONLY|os.O_CREAT|os.O_EXCL
+        fd=os.open(path, flags, 0644)
         os.write(fd, file.data)
         os.close(fd)
 

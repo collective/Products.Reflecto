@@ -4,6 +4,10 @@ Changelog
 2.0 (Unreleased)
 -----------------
 
+- Prevent CR/LF conversion when uploading files on Windows. This fixes
+  bug 22 (see http://plone.org/products/reflecto/issues/22 ).
+  [wichert]
+
 - Port to Plone 3.
   [wichert]
 
