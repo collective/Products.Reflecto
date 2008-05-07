@@ -1,7 +1,7 @@
 PROJECTNAME = "Reflecto"
 
 try:
-    import Products.CacheSetup.vocabulary
+    import Products.CacheSetup
 except ImportError:
     HAS_CACHESETUP = False
 else:
