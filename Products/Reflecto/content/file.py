@@ -55,6 +55,9 @@ class ReflectoFile(BaseProxy, DynamicType):
 
         member=pcs.getMember()
         rule=self.getReflector().getCacheRule()
+        if not rule:
+            return
+
         rule=getattr(pcs.getRules(), rule, None)
         if rule is None:
             return
