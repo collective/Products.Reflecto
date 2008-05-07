@@ -8,6 +8,7 @@ from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.permissions import View
 from Products.Reflecto.interfaces import IReflectoFile
 from Products.Reflecto.content.proxy import BaseProxy
+from Products.Reflecto.config import HAS_CACHESETUP
 
 
 class ReflectoFile(BaseProxy, DynamicType):
@@ -33,8 +34,46 @@ class ReflectoFile(BaseProxy, DynamicType):
         return open(self.getFilesystemPath(), "rb").read()
     
 
+    security.declarePrivate(View, "setCacheHeaders")
+    def setCacheHeaders(self):
+        if not HAS_CACHESETUP:
+            return
+
+        from Products.CMFCore.utils import getToolByName
+        from Products.CacheSetup.config import CACHE_TOOL_ID
+        from Products.CacheSetup.cmf_utils import _setCacheHeaders
+
+        # The CacheSetup API is not just weird. It's insane.
+
+        pcs=getToolByName(self, CACHE_TOOL_ID, None)
+        if pcs is None or not pcs.getEnabled():
+            return
+
+        request=getattr(self, "REQUEST", None)
+        if request is None:
+            return
+
+        member=pcs.getMember()
+        rule=self.getReflector().getCacheRule()
+        rule=getattr(pcs.getRules(), rule, None)
+        if rule is None:
+            return
+        # We have to pretend that the default view is being accessed,
+        # otherwise the rule will refuse to find a header set.
+        header_set=rule.getHeaderSet(request, self, "reflecto_file_view",
+                                     member)
+        if header_set is None:
+            return
+
+        expr_context=rule._getExpressionContext(request, self,
+                            "reflecto_file_view", member, keywords={})
+
+        _setCacheHeaders(self, {}, rule, header_set, expr_context)
+
+
     def __call__(self):
         """Download the file"""
+        self.setCacheHeaders()
         RESPONSE=self.REQUEST['RESPONSE']
         iterator = filestream_iterator(self.getFilesystemPath(), 'rb')
         

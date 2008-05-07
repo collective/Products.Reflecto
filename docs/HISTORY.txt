@@ -4,6 +4,10 @@ Changelog
 2.0 (Unreleased)
 -----------------
 
+- If CacheSetup is installed allow users to tweak cache rules for individual
+  Reflector instances.
+  [wichert]
+
 - Prevent CR/LF conversion when uploading files on Windows. This fixes
   bug 22 (see http://plone.org/products/reflecto/issues/22 ).
   [wichert]
