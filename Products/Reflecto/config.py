@@ -1,4 +1,4 @@
-PROJECTNAME = "reflex"
+PROJECTNAME = "Reflecto"
 
 try:
     import Products.CacheSetup.vocabulary
