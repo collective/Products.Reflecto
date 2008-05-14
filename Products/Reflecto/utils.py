@@ -1,7 +1,17 @@
 import os.path
 import stat
 from App.config import getConfiguration
-from zope.interface import alsoProvides, noLongerProvides
+from zope.interface import alsoProvides
+try:
+    from zope.interface import noLongerProvides
+except ImportError:
+    # BBB for Zope < 2.10
+    def noLongerProvides(object, interface):
+        from zope.interface.declarations import directlyProvides
+        from zope.interface.declarations import directlyProvidedBy
+        directlyProvides(object, directlyProvidedBy(object)-interface)
+        if interface.providedBy(object):
+            raise ValueError("Can only remove directly provided interfaces.")
 
 
 def makePathAbsolute(path):
