@@ -198,7 +198,7 @@
                  tabindex=""
                  tal:condition="python:(batch or here.cb_dataValid and button['id'] in ('paste', 'upload', 'createdir')) and not ( query_path and button['id'] in ['cut','copy','paste']) and not button['id'] == 'change_state'"
                  i18n:attributes="value"
-                 tal:attributes="value button/id;
+                 tal:attributes="value button/title;
                                  name button/url;
                                  tabindex tabindex/next;
                                  class python:test((button['id'] in ('paste', 'upload', 'createdir')), 'standalone', 'context')" />
