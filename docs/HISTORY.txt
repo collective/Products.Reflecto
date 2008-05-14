@@ -4,6 +4,9 @@ Changelog
 2.0 (Unreleased)
 -----------------
 
+- Use the correct title for the folder_contents buttons.
+  [wichert]
+
 - Add support for downloading folders as zip files.
   [wichert]
 

@@ -41,6 +41,7 @@ Copyright
 =========
 
 Reflecto is Copyright 2007 by Jarn AS
+Reflecto is Copyright 2008 by Simplon
 
 Reflecto is distributed under the GNU General Public License, version 2. A
 copy of the license can be found in GPL.txt in the doc directory.
