@@ -9,5 +9,9 @@
       condition_expr="" url_expr="string:@@add_directory:method" visible="True">
    <permission>Add Filesystem Object"</permission>
   </action>
+  <action title="Download" action_id="download" category="reflector_buttons"
+      condition_expr="" url_expr="string:@@download:method" visible="True">
+    <permission>View</permission>
+  </action>
  </action-provider>
 </object>

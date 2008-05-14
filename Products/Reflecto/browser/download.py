@@ -27,13 +27,40 @@ class DirectoryDownloadView(BrowserView):
         return name not in frozenset([".svn", ".DS_Store", ".git"])
 
 
+    def acceptableEntry(self, entry):
+        """Test if an entry is acceptable.
+
+        This method performs more extensive tests on an object itself.
+        Most noticably it checks if there is a list of path filters in
+        the request parameters that should be honoured.
+        """
+
+        paths=self.request.form.get("paths", None)
+        if not paths:
+            return True
+
+        entrypath=entry.getPhysicalPath()
+        for path in paths:
+            parts=tuple(path.split("/"))
+            if entrypath[:len(parts)]==parts:
+                return True
+
+        return False
+
+
     def _addToZip(self, zip, entry, path=[]):
         newpath=path + [entry.__name__]
 
         if IReflectoDirectory.providedBy(entry):
             for key in entry.keys():
-                if self.acceptableName(key):
-                    self._addToZip(zip, entry[key], newpath)
+                if not self.acceptableName(key):
+                    continue
+
+                value=entry[key]
+                if not self.acceptableEntry(value):
+                    continue
+
+                self._addToZip(zip, entry[key], newpath)
         elif IReflectoFile.providedBy(entry):
             zip.write(entry.getFilesystemPath(), os.path.join(*newpath))
 
