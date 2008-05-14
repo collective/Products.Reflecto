@@ -17,7 +17,7 @@ class IReflectoProxy(Interface):
     def getPathToReflectoParent():
         """Return a path from the reflex object to this proxy.
 
-        The path should be a tuple of strings.
+        The path will be a tuple of strings.
         """
 
 
