@@ -69,7 +69,7 @@ if HAS_CACHESETUP:
         StringField("cacheRule",
             write_permission = AddReflectorFolder,
             default = "",
-            required = True,
+            required = False,
             vocabulary = "listReflectoCacheRules",
             widget = SelectionWidget(
                 label       = "Cache rules",
@@ -104,6 +104,8 @@ class Reflector(ReflectoDirectoryBase, BaseContent, BrowserDefaultMixin):
             return []
 
         pcs=getToolByName(self, CACHE_TOOL_ID, None)
+        if pcs is None:
+            return []
         rules=[(rule.getId(), rule.Title())
                 for rule in pcs.getRules().objectValues("ContentCacheRule")
                     if "ReflectoFile" in rule.getContentTypes()]
