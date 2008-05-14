@@ -53,7 +53,6 @@ class ReflectoFile(BaseProxy, DynamicType):
         if request is None:
             return
 
-        member=pcs.getMember()
         rule=self.getReflector().getCacheRule()
         if not rule:
             return
@@ -63,6 +62,7 @@ class ReflectoFile(BaseProxy, DynamicType):
             return
         # We have to pretend that the default view is being accessed,
         # otherwise the rule will refuse to find a header set.
+        member=pcs.getMember()
         header_set=rule.getHeaderSet(request, self, "reflecto_file_view",
                                      member)
         if header_set is None:

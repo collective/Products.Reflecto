@@ -4,6 +4,9 @@ Changelog
 2.0 (Unreleased)
 -----------------
 
+- Add support for downloading folders as zip files.
+  [wichert]
+
 - If CacheSetup is installed allow users to tweak cache rules for individual
   Reflector instances.
   [wichert]

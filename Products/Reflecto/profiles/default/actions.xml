@@ -1,6 +1,10 @@
 <?xml version="1.0"?>
 <object name="portal_actions" meta_type="Plone Actions Tool">
  <action-provider name="portal_actions">
+  <action title="Download" action_id="download" category="reflector_buttons"
+      condition_expr="" url_expr="string:@@download:method" visible="True">
+    <permission>View</permission>
+  </action>
   <action title="Upload file" action_id="upload" category="reflector_buttons"
       condition_expr="" url_expr="string:@@add_file:method" visible="True">
    <permission>Add Filesystem Object"</permission>

@@ -33,6 +33,13 @@
       />
 
   <browser:page
+      for="..interfaces.IReflectoDirectory"
+      name="download"
+      class=".download.DirectoryDownloadView"
+      permission="zope2.View"
+      />
+
+  <browser:page
       for="..interfaces.IReflectoProxy"
       name="index"
       class=".index.IndexView"
