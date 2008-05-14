@@ -1,8 +1,8 @@
 Changelog
-=-=======
+=========
 
-2.0 (Unreleased)
------------------
+2.0 (Released 2008/05/14)
+-------------------------
 
 - Use the correct title for the folder_contents buttons.
   [wichert]
@@ -21,7 +21,7 @@ Changelog
 - Port to Plone 3.
   [wichert]
 
-- Add a 'life' option which makes Reflecto show life filesystem data instead
+- Add a 'live' option which makes Reflecto show live filesystem data instead
   of catalogued data.
   [wichert]
 
