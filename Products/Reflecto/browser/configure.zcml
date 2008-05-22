@@ -46,4 +46,11 @@
       permission="Reflecto.AddFilesystemObject"
       allowed_interface="..interfaces.IIndexView"
       />
+
+  <browser:page
+      for="Products.CMFPlone.Portal.PloneSite"
+      name="reflecto-controlpanel"
+      class=".config.ReflectoConfigurationForm"
+      permission="cmf.ManagePortal"
+      />
 </configure>

@@ -35,6 +35,11 @@
     factory=".catalog.FileProxyIndexableContentAdapter"
     />
 
+<adapter
+   for="Products.CMFPlone.Portal.PloneSite"
+   provides=".interfaces.IReflectoConfiguration"
+   factory=".adapters.form_adapter" />
+
 <subscriber
     for=".interfaces.IReflector
          zope.app.container.interfaces.IObjectMovedEvent"

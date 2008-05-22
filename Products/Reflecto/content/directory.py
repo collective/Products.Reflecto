@@ -20,6 +20,7 @@ from ZODB.POSException import ConflictError
 
 from zope.event import notify
 from zope.interface import implements
+from zope.component import getUtility
 from zope.app.container.contained import notifyContainerModified
 from zope.app.container.contained import ObjectMovedEvent, ObjectRemovedEvent
 from zope.lifecycleevent import ObjectCopiedEvent
@@ -32,6 +33,7 @@ from Products.CMFPlone.interfaces.constrains import IConstrainTypes
 from Products.statusmessages.interfaces import IStatusMessage
 
 from Products.Reflecto.permissions import AddFilesystemObject
+from Products.Reflecto.interfaces import IReflectoConfiguration
 from Products.Reflecto.interfaces import IReflectoDirectory
 from Products.Reflecto.interfaces import ILifeProxy
 from Products.Reflecto.interfaces import IReflectoProxy
@@ -52,6 +54,12 @@ class ReflectoDirectoryBase:
 
     isPrincipiaFolderish = True
     
+    security.declarePrivate('hiddenFiles')
+    def hiddenFilenames(self):
+        hidden = set(getUtility(IReflectoConfiguration, name='reflecto_config').hidden_files)
+        hidden.update(self.getHiddenFiles())
+        return hidden
+
     security.declarePrivate('acceptableFilename')
     def acceptableFilename(self, name):
         """Check if a filename is allowed."""
@@ -61,7 +69,7 @@ class ReflectoDirectoryBase:
             return False
         if name.startswith('@@') or name[0] == '.':
             return False
-        for pattern in self.getHiddenFiles():
+        for pattern in self.hiddenFilenames():
             if fnmatch.fnmatch(name, pattern):
                 return False
         return True

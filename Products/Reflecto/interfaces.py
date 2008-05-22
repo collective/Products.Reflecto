@@ -1,5 +1,7 @@
 from zope.interface import Interface
+from zope import schema
 from zope.app.container.interfaces import IReadContainer
+from zope.app.i18n import ZopeMessageFactory as _
 
 class IReflector(Interface):
     """Reflection of a filesystem folder."""
@@ -65,3 +67,13 @@ class IIndexView(Interface):
         will be added and removed entries will be deleted from the catalog.
         """
 
+
+class IReflectoConfiguration(Interface):
+    """This interface defines the configlet."""
+
+    hidden_files = schema.List(
+        title=_(u"Filenames"),
+        description=_(u"Files listed here will not be displayed."),
+        default=[],
+        value_type=schema.TextLine(),
+        required=False)
