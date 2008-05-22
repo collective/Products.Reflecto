@@ -1,6 +1,7 @@
 import os
 import shutil
 import stat
+import fnmatch
 from types import StringType
 from UserDict import DictMixin
 
@@ -60,6 +61,9 @@ class ReflectoDirectoryBase:
             return False
         if name.startswith('@@') or name[0] == '.':
             return False
+        for pattern in self.getHiddenFiles():
+            if fnmatch.fnmatch(name, pattern):
+                return False
         return True
 
     security.declarePrivate('acceptableFile')
