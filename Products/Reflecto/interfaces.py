@@ -68,12 +68,12 @@ class IIndexView(Interface):
         """
 
 
-class IReflectoConfiguration(Interface):
+class IReflectoConfigurationSchema(Interface):
     """This interface defines the configlet."""
 
-    hidden_files = schema.List(
+    reflecto_hidden_files = schema.List(
         title=_(u"Filenames"),
-        description=_(u"Files listed here will not be displayed."),
+        description=_(u"Files listed here will not be displayed. Unix shell-style wildcards *, ?, and character ranges expressed with [] are supported."),
         default=[],
         value_type=schema.TextLine(),
         required=False)

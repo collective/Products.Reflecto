@@ -8,8 +8,6 @@ from Products.Archetypes.atapi import Schema
 from Products.Archetypes.atapi import BooleanWidget
 from Products.Archetypes.atapi import StringField
 from Products.Archetypes.atapi import StringWidget
-from Products.Archetypes.atapi import LinesField
-from Products.Archetypes.atapi import LinesWidget
 from Products.Archetypes.atapi import registerType
 
 from Products.CMFCore.permissions import View
@@ -56,18 +54,6 @@ ReflectoSchema = BaseSchema + Schema((
                           "relative to the Zope instance home or an "
                           "absolute path.",
             description_msgid = "reflex_path_help",
-            i18n_domain = "plone")
-        ),
-
-    LinesField("hiddenFiles",
-        write_permission = AddReflectorFolder,
-        required = False,
-        widget = LinesWidget(
-            label = "Hidden files",
-            label_msgid = "reflex_hidden_label",
-            description = "Any files listed here will not be displayed. "
-                          "Please enter one filename per line.",
-            description_msgid = "reflex_hidden_help",
             i18n_domain = "plone")
         ),
     ))

@@ -4,6 +4,8 @@
   <property name="typesUseViewActionInListings" purge="False">
    <element value="ReflectoFile"/>
   </property>
+  <property name="reflecto_hidden_files" type="lines">
+  </property>
  </object>
 </object>
   

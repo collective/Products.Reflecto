@@ -4,6 +4,8 @@
     xmlns:browser="http://namespaces.zope.org/browser"
     >
 
+  <adapter factory=".controlpanel.ReflectoControlPanelAdapter" />
+
   <browser:page
       for="..interfaces.ILifeProxy"
       name="getFolderContents"
@@ -50,7 +52,7 @@
   <browser:page
       for="Products.CMFPlone.Portal.PloneSite"
       name="reflecto-controlpanel"
-      class=".config.ReflectoConfigurationForm"
+      class=".controlpanel.ReflectoControlPanel"
       permission="cmf.ManagePortal"
       />
 </configure>

@@ -27,13 +27,13 @@ from zope.lifecycleevent import ObjectCopiedEvent
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.permissions import View, DeleteObjects
+from Products.CMFCore.utils import getToolByName
 from Products.CMFPlone.interfaces.ConstrainTypes \
         import IConstrainTypes as Z2IConstrainTypes
 from Products.CMFPlone.interfaces.constrains import IConstrainTypes
 from Products.statusmessages.interfaces import IStatusMessage
 
 from Products.Reflecto.permissions import AddFilesystemObject
-from Products.Reflecto.interfaces import IReflectoConfiguration
 from Products.Reflecto.interfaces import IReflectoDirectory
 from Products.Reflecto.interfaces import ILifeProxy
 from Products.Reflecto.interfaces import IReflectoProxy
@@ -55,10 +55,9 @@ class ReflectoDirectoryBase:
     isPrincipiaFolderish = True
     
     security.declarePrivate('hiddenFiles')
-    def hiddenFilenames(self):
-        hidden = set(getUtility(IReflectoConfiguration, name='reflecto_config').hidden_files)
-        hidden.update(self.getHiddenFiles())
-        return hidden
+    def hiddenFiles(self):
+        sp = getToolByName(self, 'portal_properties').site_properties
+        return sp.getProperty('reflecto_hidden_files')
 
     security.declarePrivate('acceptableFilename')
     def acceptableFilename(self, name):
@@ -69,7 +68,7 @@ class ReflectoDirectoryBase:
             return False
         if name.startswith('@@') or name[0] == '.':
             return False
-        for pattern in self.hiddenFilenames():
+        for pattern in self.hiddenFiles():
             if fnmatch.fnmatch(name, pattern):
                 return False
         return True
