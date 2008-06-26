@@ -8,7 +8,7 @@ or Plone content types.
 Requirements
 ============
 
-* Plone 3.0 or later
+* Plone 3.1 or later
 
 * TextIndexNG3 is optional, but needed to index non-text files.
 

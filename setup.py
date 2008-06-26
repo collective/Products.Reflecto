@@ -23,6 +23,7 @@ setup(name='Products.Reflecto',
       zip_safe=False,
       install_requires=[
           'setuptools',
+          'plone.app.protect',
       ],
       entry_points="""
       # -*- Entry points: -*-

@@ -27,6 +27,8 @@
             action="folder_object"
             tal:attributes="action here_url">
 
+        <input tal:replace="structure context/@@authenticator/authenticator" /> 
+        
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
         <h1>

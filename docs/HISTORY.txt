@@ -4,6 +4,9 @@ Changelog
 2.1 (Unreleased)
 ----------------
 
+- Add CSRF authenticator to the folder_contents page. This means Reflecto now
+  requires Plone 3.1, or Plone 3.0 with the CSRF hotfix.
+  [wichert]
 
 
 2.0 (Released 2008/05/14)
