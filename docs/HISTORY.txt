@@ -4,8 +4,13 @@ Changelog
 2.1 (Unreleased)
 ----------------
 
+- Remove the properties alias from the Reflector type. This is obsolete
+  in Plone 3.x.
+  [wichert]
+
 - Add CSRF authenticator to the folder_contents page. This means Reflecto now
-  requires Plone 3.1, or Plone 3.0 with the CSRF hotfix.
+  requires Plone 3.1, or Plone 3.0 with the CSRF hotfix. This fixes
+  http://plone.org/products/reflecto/issues/30 .
   [wichert]
 
 

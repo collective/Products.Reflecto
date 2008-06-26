@@ -21,7 +21,6 @@
  <alias from="(Default)" to="(dynamic view)"/>
  <alias from="edit" to="atct_edit"/>
  <alias from="index.html" to="(dynamic view)"/>
- <alias from="properties" to="base_metadata"/>
  <alias from="view" to="(selected layout)"/>
  <alias from="folder_contents" to="reflecto_folder_contents"/>
  <action title="Reindex" action_id="reindex" category="object"
@@ -34,11 +33,6 @@
  </action>
  <action title="Edit" action_id="edit" category="object" condition_expr=""
     url_expr="string:${object_url}/edit" visible="True">
-  <permission value="Modify portal content"/>
- </action>
- <action title="Properties" action_id="metadata" category="object"
-    condition_expr="" url_expr="string:${object_url}/properties"
-    visible="True">
   <permission value="Modify portal content"/>
  </action>
  <action title="References" action_id="references" category="object"
