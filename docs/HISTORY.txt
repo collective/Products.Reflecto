@@ -4,6 +4,10 @@ Changelog
 2.1 (Unreleased)
 ----------------
 
+- Lowercase filenames before looking up the mime-type. This fixes incorrect
+  mime-types for uppercase filenames.
+  [wichert]
+
 - Remove the properties alias from the Reflector type. This is obsolete
   in Plone 3.x.
   [wichert]

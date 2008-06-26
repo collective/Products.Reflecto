@@ -128,7 +128,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
 
     def Format(self):
         try:
-            return mimetypes.types_map[os.path.splitext(self.getId())[1]]
+            return mimetypes.types_map[os.path.splitext(self.getId().lower())[1]]
         except KeyError:
             return "application/octet-stream"
 

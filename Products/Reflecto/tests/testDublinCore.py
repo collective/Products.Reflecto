@@ -15,6 +15,7 @@ class DublinCoreTests(ReflectoZopeTestCase):
         self.reflector.setRelativePath(samplesPath)
         self.jpeg=self.reflector["reflecto.jpg"]
         self.text=self.reflector["reflecto.txt"]
+        self.BIGJPEG=self.reflector["BIGFILE.JPG"]
         self.subdir=self.reflector["subdir"]
 
 
@@ -40,6 +41,7 @@ class DublinCoreTests(ReflectoZopeTestCase):
         self.assertEqual(self.jpeg.Format(), "image/jpeg")
         self.assertEqual(self.text.Format(), "text/plain")
         self.assertEqual(self.subdir.Format(), "application/octet-stream")
+        self.assertEqual(self.BIGJPEG.Format(), "image/jpeg")
 
 
 def test_suite():
