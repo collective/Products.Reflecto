@@ -21,8 +21,10 @@ from Products.Reflecto.config import HAS_CACHESETUP
 
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 from webdav.Collection import Collection
+from ZPublisher import xmlrpc
+from Acquisition import aq_base
 
-from directory import ReflectoDirectoryBase
+from directory import ReflectoDirectoryBase, ReflectoNullResource
 
 ReflectoSchema = BaseSchema + Schema((
     InterfaceField("life",
@@ -135,6 +137,16 @@ class Reflector(ReflectoDirectoryBase, Collection, BaseContent, BrowserDefaultMi
             return self[name]
         except KeyError:
             pass
+        
+        if hasattr(aq_base(self), name):
+            return getattr(self, name)
+        
+        # webdav
+        method = REQUEST.get('REQUEST_METHOD', 'GET').upper()
+        if (method not in ('GET', 'POST') and not
+              isinstance(REQUEST.RESPONSE, xmlrpc.Response) and
+              REQUEST.maybe_webdav_client and not REQUEST.path):
+            return ReflectoNullResource(self, name, REQUEST).__of__(self)
         
         return BaseContent.__bobo_traverse__(self, REQUEST, name)
 

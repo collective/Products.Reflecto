@@ -193,7 +193,8 @@ class ReflectoDirectoryBase:
         if not self.acceptableFilename(id):
             raise BadRequestException, ('The id "%s" is invalid.' % id)
     
-    def _verifyObjectPaste(self, obj):
+    def _verifyObjectPaste(self, obj, validate_src=1):
+        # validate_src ignored
         assert isinstance(obj, BaseProxy)
         prefix = os.path.commonprefix((obj.getFilesystemPath(),
                                        self.getFilesystemPath()))
