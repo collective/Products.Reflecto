@@ -64,15 +64,11 @@ class DirectoryTests(ReflectoUnitTestCase):
     def testIteration(self):
         names = set(self.reflecto)
         self.assertEqual(names, set(['reflecto.jpg', 'reflecto.png',
-                                     'reflecto.txt', 'subdir']))
+                                     'reflecto.txt', 'subdir', 'BIGFILE.JPG']))
     
     def testHasKey(self):
         self.assertTrue(self.reflecto.has_key('subdir'))
         self.assertFalse(self.reflecto.has_key('nonesuch'))
-
-    def testIteration(self):
-        self.assertEqual(set(self.reflecto.keys()),
-                set(['subdir', 'reflecto.txt', 'reflecto.jpg', 'reflecto.png']))
         
     def testAcceptableNames(self):
         self.assertFalse(self.reflecto.acceptableFilename("@@viewname"))
@@ -141,17 +137,16 @@ class DirectoryFileManipulationTests(DirectoryFileManipulationBase):
         
     def testDeleteNoAccess(self):
         os.chmod(self.tmppath, stat.S_IRUSR | stat.S_IXUSR) # read-only
-        self.assertEqual(self.reflecto.manage_delObjects(('foo',)), [])
+        self.assertEqual(self.reflecto.manage_delObjects(('foo',)), ['foo'])
         self.assertTrue(os.path.exists(os.path.join(self.tmppath, 'foo')))
         
     def testDeleteFile(self):
-        self.assertEqual(self.reflecto.manage_delObjects(('foo',)), ['foo'])
+        self.assertEqual(self.reflecto.manage_delObjects(('foo',)), None)
         self.assertTrue(self.indexview.called)
         self.assertFalse(os.path.exists(os.path.join(self.tmppath, 'foo')))
         
     def testDeleteDirectory(self):
-        self.assertEqual(self.reflecto.manage_delObjects(('subdir',)),
-                         ['subdir'])
+        self.assertEqual(self.reflecto.manage_delObjects(('subdir',)), None)
         self.assertTrue(self.indexview.called)
         self.assertFalse(os.path.exists(os.path.join(self.tmppath, 'subdir')))
         
@@ -166,7 +161,7 @@ class DirectoryFileManipulationTests(DirectoryFileManipulationBase):
         self.assertEqual(len(events), 1)
         self.assertEqual(events[0].oldName, 'foo')
         
-        self.assertEqual(self.reflecto.manage_delObjects(('foo',)), ['foo'])
+        self.assertEqual(self.reflecto.manage_delObjects(('foo',)), None)
         events = getEvents()
         self.assertEqual(len(events), 4)
         self.assertTrue(IObjectWillBeRemovedEvent.providedBy(events[1]))

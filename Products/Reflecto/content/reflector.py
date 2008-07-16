@@ -20,6 +20,7 @@ from Products.Reflecto.fields import InterfaceField
 from Products.Reflecto.config import HAS_CACHESETUP
 
 from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
+from webdav.Collection import Collection
 
 from directory import ReflectoDirectoryBase
 
@@ -85,7 +86,7 @@ if HAS_CACHESETUP:
             ),
     ))
 
-class Reflector(ReflectoDirectoryBase, BaseContent, BrowserDefaultMixin):
+class Reflector(ReflectoDirectoryBase, Collection, BaseContent, BrowserDefaultMixin):
     """Reflection of a filesystem folder."""
 
     __implements__ = (ReflectoDirectoryBase.__implements__,

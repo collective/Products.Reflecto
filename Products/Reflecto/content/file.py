@@ -3,15 +3,21 @@ from zope.interface import implements
 from AccessControl import ClassSecurityInfo
 from Globals import InitializeClass
 from ZPublisher.Iterators import filestream_iterator
+from webdav.Resource import Resource
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.permissions import View
 from Products.Reflecto.interfaces import IReflectoFile
-from Products.Reflecto.content.proxy import BaseProxy
+from Products.Reflecto.content.proxy import BaseProxy, BaseMove
 from Products.Reflecto.config import HAS_CACHESETUP
+from Products.Reflecto.permissions import AddFilesystemObject
+
+from ZServer import LARGE_FILE_THRESHOLD
+import os
+import tempfile
 
 
-class ReflectoFile(BaseProxy, DynamicType):
+class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
     """A filesystem reflected file."""
 
     __implements__ = (BaseProxy.__implements__, DynamicType.__implements__)
@@ -105,6 +111,41 @@ class ReflectoFile(BaseProxy, DynamicType):
 
         return result
     
+    security.declareProtected(AddFilesystemObject, 'PUT')
+    def PUT(self, REQUEST, RESPONSE):
+        """Handle HTTP PUT requests"""
+        self.dav__init(REQUEST, RESPONSE)
+        self.dav__simpleifhandler(REQUEST, RESPONSE, refresh=1)
+        file=REQUEST['BODYFILE']
+        path = self.getFilesystemPath()
+        
+        if isinstance(file, tempfile._TemporaryFileWrapper):
+            # Zope >= 2.11
+            # If we only ran on unix we would use os.link here. Instead, rename
+            # the file and manually close the NamedTemporaryFile, bypassing the
+            # call to os.unlink.
+            os.rename(file.name, path)
+            os.chmod(path, 0644)
+            file.file.close()
+            file.close_called = True
+        else:
+            # Zope < 2.11        
+            try:
+                # For OSes which support it (Windows) we need to use the
+                # O_BINARY flag to prevent cr/lf rewriting.
+                # os.O_EXCL not used so uploads can overwrite existing files
+                flags=os.O_WRONLY|os.O_CREAT|os.O_TRUNC|os.O_BINARY
+            except AttributeError:
+                flags=os.O_WRONLY|os.O_CREAT|os.O_TRUNC
+            fd=os.open(self.getFilesystemPath(), flags, 0644)
+            
+            data = file.read(LARGE_FILE_THRESHOLD) # 512k chunks, might be optimal...
+            while data:
+                os.write(fd, data)
+                data = file.read(LARGE_FILE_THRESHOLD)
+            os.close(fd)         
+            
+        self.indexObject()
 
 InitializeClass(ReflectoFile)
 

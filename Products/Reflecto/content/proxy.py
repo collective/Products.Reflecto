@@ -1,15 +1,26 @@
 import mimetypes
+import os
 import os.path
+import shutil
 from stat import ST_CTIME, ST_MTIME, ST_SIZE
 
 import Acquisition
+from Acquisition import aq_base, aq_parent, aq_inner
 from AccessControl import ClassSecurityInfo
+from AccessControl.Permissions import copy_or_move
 from DateTime import DateTime
 from Globals import InitializeClass
 from OFS.CopySupport import CopyError
 from OFS.SimpleItem import Item
 
 from zope.interface import implements
+from zope.event import notify
+from zope.app.container.contained import ObjectMovedEvent, ObjectRemovedEvent
+from zope.app.container.contained import notifyContainerModified
+from zope.lifecycleevent import ObjectCopiedEvent
+from OFS.event import ObjectWillBeMovedEvent, ObjectClonedEvent
+from webdav.interfaces import IWriteLock
+from webdav import Lockable
 
 from Products.CMFCore.permissions import View
 from Products.CMFCore.interfaces import ICatalogableDublinCore
@@ -18,6 +29,7 @@ from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
 
 from Products.Reflecto.interfaces import IReflector
 from Products.Reflecto.interfaces import IReflectoProxy
+from Products.Reflecto.interfaces import IReflectoDirectory
 
 # The system default timezone
 system_timezone = DateTime().timezone()
@@ -151,13 +163,13 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     def _notifyOfCopyTo(self, container, op=0):
         """Only allow copies to the same reflexion."""
         container = Acquisition.aq_inner(container)
-        reflex = self.getReflector()
+        reflex = self.getReflector().aq_base
 
-        if container is reflex:
+        if container.aq_base is reflex:
             return
 
         if IReflectoProxy.providedBy(container) and \
-                container.getReflector() is reflex:
+                container.getReflector().aq_base is reflex:
             return
 
         # The exception we throw does not really matter; the CopyContainer
@@ -176,5 +188,245 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
 
     def get_size(self):
         return self.getStatus()[ST_SIZE]
+    
+    @property
+    def _p_mtime(self):
+        # used by webdav HEAD
+        return self.getStatus()[ST_MTIME]
 
 InitializeClass(BaseProxy)
+
+
+class BaseMove:
+    security = ClassSecurityInfo()
+
+    security.declareProtected(copy_or_move, 'COPY')
+    def COPY(self, REQUEST, RESPONSE):
+        """Create a duplicate of the source resource. This is only allowed
+        within the same reflecto directory."""
+        self.dav__init(REQUEST, RESPONSE)
+        if not hasattr(aq_base(self), 'cb_isCopyable') or \
+           not self.cb_isCopyable():
+            raise MethodNotAllowed, 'This object may not be copied.'
+
+        depth=REQUEST.get_header('Depth', 'infinity')
+        if not depth in ('0', 'infinity'):
+            raise BadRequest, 'Invalid Depth header.'
+
+        dest=REQUEST.get_header('Destination', '')
+        while dest and dest[-1]=='/':
+            dest=dest[:-1]
+        if not dest:
+            raise BadRequest, 'Invalid Destination header.'
+
+        try: path = REQUEST.physicalPathFromURL(dest)
+        except ValueError:
+            raise BadRequest, 'Invalid Destination header'
+
+        name = path.pop()
+
+        oflag=REQUEST.get_header('Overwrite', 'F').upper()
+        if not oflag in ('T', 'F'):
+            raise BadRequest, 'Invalid Overwrite header.'
+
+        try: parent=self.restrictedTraverse(path)
+        except ValueError:
+            raise Conflict, 'Attempt to copy to an unknown namespace.'
+        except NotFound:
+            raise Conflict, 'Object ancestors must already exist.'
+        except:
+            t, v, tb=sys.exc_info()
+            raise t, v
+        if hasattr(parent, '__null_resource__'):
+            raise Conflict, 'Object ancestors must already exist.'
+        existing=hasattr(aq_base(parent), name)
+        if existing and oflag=='F':
+            raise PreconditionFailed, 'Destination resource exists.'
+        try:
+            parent._checkId(name, allow_dup=1)
+        except:
+            raise Forbidden, sys.exc_info()[1]
+        try:
+            parent._verifyObjectPaste(self)
+        except Unauthorized:
+            raise
+        except:
+            raise Forbidden, sys.exc_info()[1]
+
+        # Now check locks.  The If header on a copy only cares about the
+        # lock on the destination, so we need to check out the destinations
+        # lock status.
+        ifhdr = REQUEST.get_header('If', '')
+        if existing:
+            # The destination itself exists, so we need to check its locks
+            destob = aq_base(parent)._getOb(name)
+            if (IWriteLock.providedBy(destob) or
+                    WriteLockInterface.isImplementedBy(destob)) and \
+                    destob.wl_isLocked():
+                if ifhdr:
+                    itrue = destob.dav__simpleifhandler(
+                        REQUEST, RESPONSE, 'COPY', refresh=1)
+                    if not itrue:
+                        raise PreconditonFailed
+                else:
+                    raise Locked, 'Destination is locked.'
+        elif (IWriteLock.providedBy(parent) or
+                WriteLockInterface.isImplementedBy(parent)) and \
+                parent.wl_isLocked():
+            if ifhdr:
+                parent.dav__simpleifhandler(REQUEST, RESPONSE, 'COPY',
+                                            refresh=1)
+            else:
+                raise Locked, 'Destination is locked.'
+
+        self._notifyOfCopyTo(parent, op=0)
+        
+        #### This part is reflecto specific
+        if existing:
+            object=getattr(parent, name)
+            self.dav__validate(object, 'DELETE', REQUEST)
+            parent.manage_delObjects([name])
+        
+        oldpath = self.getFilesystemPath()
+        newpath = os.path.join(parent.getFilesystemPath(), name)
+        
+        if IReflectoDirectory.providedBy(self):
+            if depth=='0':
+                os.mkdir(newpath, 0775)
+            else:
+                shutil.copytree(oldpath, newpath)
+        else:
+            shutil.copy2(oldpath, newpath)
+        ob = parent[name]
+        ob.indexObject()
+        notify(ObjectCopiedEvent(ob, self))
+        notify(ObjectClonedEvent(ob))
+        notifyContainerModified(parent)
+        ####
+
+        # We remove any locks from the copied object because webdav clients
+        # don't track the lock status and the lock token for copied resources
+        ob.wl_clearLocks()
+        RESPONSE.setStatus(existing and 204 or 201)
+        if not existing:
+            RESPONSE.setHeader('Location', dest)
+        RESPONSE.setBody('')
+        return RESPONSE
+
+    security.declareProtected(copy_or_move, 'MOVE')
+    def MOVE(self, REQUEST, RESPONSE):
+        """Move a resource to a new location within the reflector"""
+        self.dav__init(REQUEST, RESPONSE)
+        self.dav__validate(self, 'DELETE', REQUEST)
+        if not hasattr(aq_base(self), 'cb_isMoveable') or \
+           not self.cb_isMoveable():
+            raise MethodNotAllowed, 'This object may not be moved.'
+
+        dest=REQUEST.get_header('Destination', '')
+
+        try: path = REQUEST.physicalPathFromURL(dest)
+        except ValueError:
+            raise BadRequest, 'No destination given'
+
+        flag=REQUEST.get_header('Overwrite', 'F')
+        flag=flag.upper()
+
+        name = path.pop()
+        parent_path = '/'.join(path)
+
+        try: parent = self.restrictedTraverse(path)
+        except ValueError:
+            raise Conflict, 'Attempt to move to an unknown namespace.'
+        except 'Not Found':
+            raise Conflict, 'The resource %s must exist.' % parent_path
+        except:
+            t, v, tb=sys.exc_info()
+            raise t, v
+        if hasattr(parent, '__null_resource__'):
+            raise Conflict, 'The resource %s must exist.' % parent_path
+        existing=hasattr(aq_base(parent), name)
+        if existing and flag=='F':
+            raise PreconditionFailed, 'Resource %s exists.' % dest
+        try:
+            parent._checkId(name, allow_dup=1)
+        except:
+            raise Forbidden, sys.exc_info()[1]
+        try:
+            parent._verifyObjectPaste(self)
+        except Unauthorized:
+            raise
+        except:
+            raise Forbidden, sys.exc_info()[1]
+
+        # Now check locks.  Since we're affecting the resource that we're
+        # moving as well as the destination, we have to check both.
+        ifhdr = REQUEST.get_header('If', '')
+        if existing:
+            # The destination itself exists, so we need to check its locks
+            destob = aq_base(parent)._getOb(name)
+            if (IWriteLock.providedBy(destob) or
+                    WriteLockInterface.isImplementedBy(destob)) and \
+                    destob.wl_isLocked():
+                if ifhdr:
+                    itrue = destob.dav__simpleifhandler(
+                        REQUEST, RESPONSE, 'MOVE', url=dest, refresh=1)
+                    if not itrue:
+                        raise PreconditionFailed
+                else:
+                    raise Locked, 'Destination is locked.'
+        elif (IWriteLock.providedBy(parent) or
+                WriteLockInterface.isImplementedBy(parent)) and \
+                parent.wl_isLocked():
+            # There's no existing object in the destination folder, so
+            # we need to check the folders locks since we're changing its
+            # member list
+            if ifhdr:
+                itrue = parent.dav__simpleifhandler(REQUEST, RESPONSE, 'MOVE',
+                                                    col=1, url=dest, refresh=1)
+                if not itrue:
+                    raise PreconditionFailed, 'Condition failed.'
+            else:
+                raise Locked, 'Destination is locked.'
+        if Lockable.wl_isLocked(self):
+            # Lastly, we check ourselves
+            if ifhdr:
+                itrue = self.dav__simpleifhandler(REQUEST, RESPONSE, 'MOVE',
+                                                  refresh=1)
+                if not itrue:
+                    raise PreconditionFailed, 'Condition failed.'
+            else:
+                raise PreconditionFailed, 'Source is locked and no '\
+                      'condition was passed in.'
+
+        orig_container = aq_parent(aq_inner(self))
+        orig_id = self.getId()
+
+        self._notifyOfCopyTo(parent, op=1)
+
+        #### This part is reflecto specific
+        notify(ObjectWillBeMovedEvent(self, orig_container, orig_id,
+                                      parent, name))
+        self.unindexObject()
+        if existing:
+            object=parent[name]
+            self.dav__validate(object, 'DELETE', REQUEST)
+            parent.manage_delObjects([name])
+            
+        os.rename(self.getFilesystemPath(), os.path.join(parent.getFilesystemPath(), name))
+        ob = parent[name]
+        ob.indexObject()
+        ####
+        
+        notify(ObjectMovedEvent(ob, orig_container, orig_id, parent, name))
+        notifyContainerModified(orig_container)
+        if aq_base(orig_container) is not aq_base(parent):
+            notifyContainerModified(parent)
+
+        RESPONSE.setStatus(existing and 204 or 201)
+        if not existing:
+            RESPONSE.setHeader('Location', dest)
+        RESPONSE.setBody('')
+        return RESPONSE
+    
+
+InitializeClass(BaseMove)

@@ -4,6 +4,9 @@ Changelog
 2.1 (Unreleased)
 ----------------
 
+- Add webdav support.
+  [elro]
+
 - Lowercase filenames before looking up the mime-type. This fixes incorrect
   mime-types for uppercase filenames.
   [wichert]
