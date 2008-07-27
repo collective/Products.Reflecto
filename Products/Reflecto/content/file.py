@@ -13,6 +13,7 @@ from Products.Reflecto.config import HAS_CACHESETUP
 from Products.Reflecto.permissions import AddFilesystemObject
 
 from ZServer import LARGE_FILE_THRESHOLD
+from App.Common import rfc1123_date
 import os
 import tempfile
 
@@ -86,7 +87,7 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
         RESPONSE=self.REQUEST['RESPONSE']
         iterator = filestream_iterator(self.getFilesystemPath(), 'rb')
         
-        RESPONSE.setHeader('Last-Modified', self.Date())
+        RESPONSE.setHeader('Last-Modified', rfc1123_date(self._p_mtime))
         RESPONSE.setHeader('Content-Type', self.Format())
         RESPONSE.setHeader('Content-Length', len(iterator))
         

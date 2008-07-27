@@ -4,6 +4,9 @@ Changelog
 2.1 (Unreleased)
 ----------------
 
+- Fix Last-Modified header format.
+  [elro]
+
 - Add webdav support.
   [elro]
 
