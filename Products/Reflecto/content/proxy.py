@@ -192,6 +192,8 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     @property
     def _p_mtime(self):
         # used by webdav HEAD
+        # properties are not acquisition wrapped, so self._stat must already
+        # exist. For webdav it already is, but elsewhere be careful
         return self.getStatus()[ST_MTIME]
 
 InitializeClass(BaseProxy)
