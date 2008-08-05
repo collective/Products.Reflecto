@@ -1,3 +1,4 @@
+import errno
 import os
 import shutil
 import stat
@@ -109,12 +110,17 @@ class ReflectoDirectoryBase:
             # No acquisition context, fail silently
             raise StopIteration
         
-        for name in os.listdir(path):
-            if not self.acceptableFilename(name):
-                continue
-            if not self.acceptableFile(os.path.join(path, name)):
-                continue
-            yield name
+        try:
+            for name in os.listdir(path):
+                if not self.acceptableFilename(name):
+                    continue
+                if not self.acceptableFile(os.path.join(path, name)):
+                    continue
+                yield name
+        except OSError, e:
+            if e.errno==errno.ENOENT:
+                raise StopIteration
+            raise
             
     def keys(self):
         return list(self.__iter__())

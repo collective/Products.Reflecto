@@ -37,6 +37,14 @@ class DirectoryTests(ReflectoUnitTestCase):
         self.reflecto = Reflector('reflecto')
         self.reflecto.setRelativePath(samplesPath)
         
+    def testIndexOnNonExistingPath(self):
+        # Raising OSError for ENOENT has many implications for the user
+        # interface: it makes it impossible to import, paste or view
+        # reflectors which have a non-existing path. This makes migrating
+        # sites extremely hard.
+        self.reflecto.setRelativePath("/this/does/not/exist")
+        self.assertEqual(self.reflecto.keys(), [])
+
     def testNotExisting(self):
         self.assertRaises(KeyError, operator.itemgetter('nonesuch'),
                           self.reflecto)

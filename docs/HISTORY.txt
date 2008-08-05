@@ -4,6 +4,12 @@ Changelog
 2.1 (Unreleased)
 ----------------
 
+- Return an empty list instead of raising an exception which triggers a
+  site error when accessing a reflector which tries to use a path which does
+  not exist on the filesystem. The old behaviour was non-intuitive for users
+  and made migrating sites extremely hard.
+  [wichert]
+
 - Update TextIndexNG3 support code to include the Title (ie the filename) of an
   object in SearchableText.
   [wichert]
