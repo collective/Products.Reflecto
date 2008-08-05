@@ -2,6 +2,8 @@ import unittest
 
 from zope.interface.verify import verifyObject
 from zope.component import provideAdapter
+from zope.component import getGlobalSiteManager
+import zope.testing.cleanup
 
 from Testing.ZopeTestCase import installProduct
 
@@ -11,6 +13,8 @@ installProduct("TextIndexNG3", quiet=True)
 try:
     from textindexng.interfaces.indexable import IIndexableContent
     from textindexng.interfaces.indexable import IIndexContentCollector
+    from textindexng.interfaces.convertor import IConverter
+    from textindexng.interfaces.convertors.null import NullConverter
     TNG3 = True
 except ImportError:
     TNG3 = False
@@ -39,13 +43,20 @@ class IndexTests(unittest.TestCase):
         self.assertEqual(proxy.SearchableText(), 'subdir')
 
 
+class FakeConvertor(object):
+    pass
+
+
 class TextIndexNG3Tests(unittest.TestCase):
     def setUp(self):
         from Products.Reflecto.catalog import \
             FileProxyIndexableContentAdapter
         self.reflector = MockReflector()
-        provideAdapter(FileProxyIndexableContentAdapter)
+        getGlobalSiteManager().registerUtility(NullConverter, IConverter,
+                'text/jpeg')
 
+    def tearDown(self):
+        zope.testing.cleanup.cleanUp()
 
     def testAdaption(self):
         proxy = ReflectoFile(("reflecto.jpg",)).__of__(self.reflector)
