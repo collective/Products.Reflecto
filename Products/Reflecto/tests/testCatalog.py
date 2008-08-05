@@ -13,10 +13,10 @@ installProduct("TextIndexNG3", quiet=True)
 try:
     from textindexng.interfaces.indexable import IIndexableContent
     from textindexng.interfaces.indexable import IIndexContentCollector
-    from textindexng.interfaces.convertor import IConverter
-    from textindexng.interfaces.convertors.null import NullConverter
+    from textindexng.interfaces.converter import IConverter
+    from textindexng.converters.null import NullConverter
     TNG3 = True
-except ImportError:
+except ImportError, e:
     TNG3 = False
 
 from Products.Reflecto.content.file import ReflectoFile
