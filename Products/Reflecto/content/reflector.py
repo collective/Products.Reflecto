@@ -2,8 +2,9 @@ from zope.interface import implements
 
 from AccessControl import ClassSecurityInfo
 
-from Products.Archetypes.atapi import BaseContent
-from Products.Archetypes.atapi import BaseSchema
+from Products.ATContentTypes.content.base import ATCTContent
+from Products.ATContentTypes.content.schemata import ATContentTypeSchema
+
 from Products.Archetypes.atapi import Schema
 from Products.Archetypes.atapi import BooleanWidget
 from Products.Archetypes.atapi import StringField
@@ -26,7 +27,7 @@ from Acquisition import aq_base
 
 from directory import ReflectoDirectoryBase, ReflectoNullResource
 
-ReflectoSchema = BaseSchema + Schema((
+ReflectoSchema = ATContentTypeSchema.copy() + Schema((
     InterfaceField("life",
         write_permission = AddReflectorFolder,
         required = False,
@@ -61,6 +62,7 @@ ReflectoSchema = BaseSchema + Schema((
         ),
     ))
 
+
 if HAS_CACHESETUP:
     from Products.Archetypes.atapi import DisplayList
     from Products.Archetypes.atapi import SelectionWidget
@@ -88,12 +90,11 @@ if HAS_CACHESETUP:
             ),
     ))
 
-class Reflector(ReflectoDirectoryBase, Collection, BaseContent, BrowserDefaultMixin):
+class Reflector(ReflectoDirectoryBase, Collection, ATCTContent):
     """Reflection of a filesystem folder."""
 
     __implements__ = (ReflectoDirectoryBase.__implements__,
-                      BaseContent.__implements__,
-                      BrowserDefaultMixin.__implements__)
+                      ATCTContent.__implements__)
     implements(IReflector)
 
     security = ClassSecurityInfo()
@@ -148,6 +149,6 @@ class Reflector(ReflectoDirectoryBase, Collection, BaseContent, BrowserDefaultMi
               REQUEST.maybe_webdav_client and not REQUEST.path):
             return ReflectoNullResource(self, name, REQUEST).__of__(self)
         
-        return BaseContent.__bobo_traverse__(self, REQUEST, name)
+        return ATCTContent.__bobo_traverse__(self, REQUEST, name)
 
 registerType(Reflector, PROJECTNAME)

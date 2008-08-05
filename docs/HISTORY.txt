@@ -4,6 +4,12 @@ Changelog
 2.1 (Unreleased)
 ----------------
 
+- Make Reflecto an ATCT content types to make it integrate better with
+  Plone. This was triggered by Reflecto instances inheriting the excludeFromNav
+  data from their parent which made them not appear in the site navigation 
+  for mysterious reasons.
+  [wichert]
+
 - Fix Last-Modified header format.
   [elro]
 
