@@ -24,6 +24,7 @@ class FileProxyIndexableContentAdapter(object):
 
 
     def indexSearchableText(self, icc):
+        icc.addContent("SearchableText", unicode(self.context.Title()))
         data=self.context.getFileContent()
         if self.hasTextContent:
             encoding=chardet.detect(data)["encoding"]

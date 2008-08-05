@@ -14,7 +14,6 @@ try:
     from textindexng.interfaces.indexable import IIndexableContent
     from textindexng.interfaces.indexable import IIndexContentCollector
     from textindexng.interfaces.converter import IConverter
-    from textindexng.converters.null import NullConverter
     TNG3 = True
 except ImportError, e:
     TNG3 = False
@@ -43,8 +42,11 @@ class IndexTests(unittest.TestCase):
         self.assertEqual(proxy.SearchableText(), 'subdir')
 
 
-class FakeConvertor(object):
-    pass
+class Converter(object):
+    def convert(self, data, encoding, mimetype, *args):
+        return (u"", "unicode")
+
+FakeConverter = Converter()
 
 
 class TextIndexNG3Tests(unittest.TestCase):
@@ -52,8 +54,9 @@ class TextIndexNG3Tests(unittest.TestCase):
         from Products.Reflecto.catalog import \
             FileProxyIndexableContentAdapter
         self.reflector = MockReflector()
-        getGlobalSiteManager().registerUtility(NullConverter, IConverter,
-                'text/jpeg')
+        provideAdapter(FileProxyIndexableContentAdapter) 
+        getGlobalSiteManager().registerUtility(FakeConverter, IConverter,
+                'image/jpeg')
 
     def tearDown(self):
         zope.testing.cleanup.cleanUp()
@@ -83,7 +86,7 @@ class TextIndexNG3Tests(unittest.TestCase):
         indexer=IIndexableContent(proxy)
         content=indexer.indexableContent(["Title"])
         self.assertEqual(content.getFields(), ["Title"])
-        self.assertEqual(content.getFieldData("Title")["content"],
+        self.assertEqual(content.getFieldData("Title")[0]["content"],
                          "reflecto.jpg")
 
 
@@ -92,8 +95,6 @@ class TextIndexNG3Tests(unittest.TestCase):
         indexer=IIndexableContent(proxy)
         content=indexer.indexableContent(["SearchableText"])
         self.assertEqual(content.getFields(), ["SearchableText"])
-        self.assertEqual(content.getFieldData("SearchableText")["mimetype"],
-                proxy.Format())
 
 
     def testTextContent(self):
@@ -103,9 +104,9 @@ class TextIndexNG3Tests(unittest.TestCase):
         self.assertEqual(content.getFields(), ["SearchableText"])
 
         data=content.getFieldData("SearchableText")
-        self.failUnless(isinstance(data["content"], unicode))
-        self.failUnless(u"superhero" in data["content"])
-        self.failUnless(u"reflecto.txt" in data["content"])
+        self.failUnless(isinstance(data[0]["content"], unicode))
+        self.failUnless(u"reflecto.txt" in data[0]["content"])
+        self.failUnless(u"superhero" in data[1]["content"])
 
 
 
