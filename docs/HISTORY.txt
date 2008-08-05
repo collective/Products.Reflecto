@@ -1,8 +1,8 @@
 Changelog
 =========
 
-2.1 (Unreleased)
-----------------
+2.1 - August 5, 2008
+--------------------
 
 - Return an empty list instead of raising an exception which triggers a
   site error when accessing a reflector which tries to use a path which does
