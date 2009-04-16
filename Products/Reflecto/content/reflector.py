@@ -20,7 +20,6 @@ from Products.Reflecto.utils import makePathAbsolute
 from Products.Reflecto.fields import InterfaceField
 from Products.Reflecto.config import HAS_CACHESETUP
 
-from Products.CMFDynamicViewFTI.browserdefault import BrowserDefaultMixin
 from webdav.Collection import Collection
 from ZPublisher import xmlrpc
 from Acquisition import aq_base
@@ -68,7 +67,6 @@ if HAS_CACHESETUP:
     from Products.Archetypes.atapi import SelectionWidget
     from Products.CMFCore.utils import getToolByName
     from Products.CacheSetup.config import CACHE_TOOL_ID
-    from Products.CacheSetup.content.content_cache_rule import ContentCacheRule
 
     ReflectoSchema += Schema((
         StringField("cacheRule",

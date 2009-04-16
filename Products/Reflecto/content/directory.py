@@ -558,8 +558,6 @@ class ReflectoNullResource(NullResource):
     def PUT(self, REQUEST, RESPONSE):
         """Create a new non-collection resource.
         """
-        from ZServer import LARGE_FILE_THRESHOLD
-
         self.dav__init(REQUEST, RESPONSE)
 
         name = self.__name__
