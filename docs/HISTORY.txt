@@ -1,8 +1,12 @@
 Changelog
 =========
 
-2.2 - Unreleased
+2.3 - Unreleased
 ----------------
+
+
+2.2 - April 16, 2009
+--------------------
 
 - Use the mimetypes_registry tool to find the content-type of a file,
   only falling back to the system mimetype registry if the tool can
