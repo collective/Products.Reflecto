@@ -4,6 +4,14 @@ Changelog
 2.2 - Unreleased
 ----------------
 
+- Use the mimetypes_registry tool to find the content-type of a file,
+  only falling back to the system mimetype registry if the tool can
+  not identify the file.
+  [wichert]
+ 
+- Set the Content-Type header correctly for file downloads.
+  [wichert]
+
 
 2.1 - August 5, 2008
 --------------------

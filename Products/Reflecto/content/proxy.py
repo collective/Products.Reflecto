@@ -27,9 +27,9 @@ from zExceptions import NotFound
 from zExceptions import Unauthorized
 from webdav.interfaces import IWriteLock
 from webdav import Lockable
-from webdab.common import PreconditionFailed
-from webdab.common import Locked
-from webdab.common import Conflict
+from webdav.common import PreconditionFailed
+from webdav.common import Locked
+from webdav.common import Conflict
 from webdav.WriteLockInterface import WriteLockInterface
 
 from Products.CMFCore.permissions import View
@@ -150,12 +150,12 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
 
 
     def Format(self):
-        extension=os.path.splitext(self.getId().lower())
+        extension=os.path.splitext(self.getId().lower())[1]
         type=None
 
         mtr=getToolByName(self, "mimetypes_registry", None)
         if mtr is not None:
-            mimetype=mtr.lookupExtension(extension)
+            mimetype=mtr.lookupExtension(extension[1:])
             if mimetype is None:
                 mimetype=mtr.classify(self.getFileContent())
 
@@ -163,7 +163,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
                 return mimetype.normalized()
 
         try:
-            return mimetypes.types_map[os.path.splitext(self.getId().lower())[1]]
+            return mimetypes.types_map[extension]
         except KeyError:
             return "application/octet-stream"
 

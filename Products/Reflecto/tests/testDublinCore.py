@@ -4,6 +4,26 @@ from Products.Reflecto.tests.zopecase import ReflectoZopeTestCase
 from Testing.ZopeTestCase import ZopeTestCase
 import unittest
 
+class MockType:
+    def __init__(self, result):
+        self.result=result
+    def normalized(self):
+        return self.result
+
+class MockMimeTypeRegistry:
+    def __init__(self):
+        self.extensions={}
+
+    def lookupExtension(self, extension):
+        result=self.extensions.get(extension, None)
+        if result is not None:
+            return MockType(result)
+
+
+    def classify(self, data):
+        return None
+
+
 class DublinCoreTests(ReflectoZopeTestCase):
     # This needs to be a ZopeTestCase so we get an aq chain with an
     # application in it, which needed for the absolute_url call in
@@ -43,8 +63,15 @@ class DublinCoreTests(ReflectoZopeTestCase):
         self.assertEqual(self.subdir.Format(), "application/octet-stream")
         self.assertEqual(self.BIGJPEG.Format(), "image/jpeg")
 
+    def testMimeTypeRegistryUsed(self):
+        mtr = MockMimeTypeRegistry()
+        mtr.extensions["jpg"]="audio/mp3"
+        self.folder.mimetypes_registry=mtr
+        self.assertEqual(self.jpeg.Format(), "audio/mp3")
+        
+
+
 
 def test_suite():
-    suite = unittest.TestSuite()
-    suite.addTest(unittest.makeSuite(DublinCoreTests))
-    return suite
+    return unittest.defaultTestLoader.loadTestsFromName(__name__)
+
