@@ -52,7 +52,6 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
         if not HAS_CACHESETUP:
             return
 
-        from Products.CMFCore.utils import getToolByName
         from Products.CacheSetup.config import CACHE_TOOL_ID
         from Products.CacheSetup.cmf_utils import _setCacheHeaders
 

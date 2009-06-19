@@ -92,6 +92,16 @@ class IndexViewTests(unittest.TestCase):
         self.assertEqual(set(results), set(["subdir", "subdir/emptyfile.txt"]))
 
 
+    def testNoSubdirIndexInLifeMode(self):
+        self.reflector.setLife(True)
+        dir=self.reflector["subdir"]
+        view=self.createView(dir)
+        view.index()
+        results=["/".join(x.getPathToReflectoParent()) \
+                    for x in self.reflector.portal_catalog.indexed]
+        self.assertEqual(results, [])
+
+
     def testFileUnindex(self):
         file=self.reflector["reflecto.txt"]
         view=self.createView(file)

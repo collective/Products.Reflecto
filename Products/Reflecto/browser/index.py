@@ -1,3 +1,4 @@
+from Acquisition import aq_inner
 from zope.interface import implements
 from zope.app.i18n import ZopeMessageFactory as _
 from Products.Five import BrowserView
@@ -28,7 +29,7 @@ class IndexView(BrowserView):
 
     def index(self, proxy=None):
         if proxy is None:
-            proxy=self.context
+            proxy=aq_inner(self.context)
 
         if not self.approve(proxy):
             return

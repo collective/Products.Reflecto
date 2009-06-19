@@ -4,6 +4,10 @@ Changelog
 2.3 - Unreleased
 ----------------
 
+- Do no index filesystem data when running in life mode. This guarantees
+  no stale data will be in the catalog.
+  [wichert]
+
 - Do not add trailing slash to file URLs in the folder contents view. This
   makes sure the base URL is correct, and relative paths in html files
   work correctly.
