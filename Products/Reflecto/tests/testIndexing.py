@@ -97,9 +97,7 @@ class IndexViewTests(unittest.TestCase):
         dir=self.reflector["subdir"]
         view=self.createView(dir)
         view.index()
-        results=["/".join(x.getPathToReflectoParent()) \
-                    for x in self.reflector.portal_catalog.indexed]
-        self.assertEqual(results, [])
+        self.assertEqual(self.reflector.portal_catalog.indexed, [])
 
 
     def testFileUnindex(self):
