@@ -4,6 +4,11 @@ Changelog
 2.3 - Unreleased
 ----------------
 
+- Move the file-specific mime type logic to the ReflectoFile class,
+  and make the default implementation always return application/octet-stream.
+  This fixes problems with indexing of directories.
+  [wichert]
+
 
 2.2 - April 16, 2009
 --------------------

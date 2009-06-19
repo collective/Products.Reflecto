@@ -1,4 +1,3 @@
-import mimetypes
 import os
 import os.path
 import shutil
@@ -36,7 +35,6 @@ from Products.CMFCore.permissions import View
 from Products.CMFCore.interfaces import ICatalogableDublinCore
 from Products.CMFCore.interfaces import IDublinCore
 from Products.CMFCore.CMFCatalogAware import CMFCatalogAware
-from Products.CMFCore.utils import getToolByName
 
 from Products.Reflecto.interfaces import IReflector
 from Products.Reflecto.interfaces import IReflectoProxy
@@ -150,22 +148,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
 
 
     def Format(self):
-        extension=os.path.splitext(self.getId().lower())[1]
-        type=None
-
-        mtr=getToolByName(self, "mimetypes_registry", None)
-        if mtr is not None:
-            mimetype=mtr.lookupExtension(extension[1:])
-            if mimetype is None:
-                mimetype=mtr.classify(self.getFileContent())
-
-            if mimetype is not None:
-                return mimetype.normalized()
-
-        try:
-            return mimetypes.types_map[extension]
-        except KeyError:
-            return "application/octet-stream"
+        return "application/octet-stream"
 
 
 ########################################################################

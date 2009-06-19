@@ -1,3 +1,4 @@
+import mimetypes
 from zope.interface import implements
 
 from AccessControl import ClassSecurityInfo
@@ -7,6 +8,8 @@ from webdav.Resource import Resource
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.permissions import View
+from Products.CMFCore.utils import getToolByName
+
 from Products.Reflecto.interfaces import IReflectoFile
 from Products.Reflecto.content.proxy import BaseProxy, BaseMove
 from Products.Reflecto.config import HAS_CACHESETUP
@@ -17,6 +20,7 @@ from App.Common import rfc1123_date
 from stat import ST_MTIME
 
 import os
+import os.path
 import tempfile
 
 
@@ -100,6 +104,25 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
     def index_html(self):
         """Download the file"""
         return self()
+
+
+    def Format(self):
+        extension=os.path.splitext(self.getId().lower())[1]
+        type=None
+
+        mtr=getToolByName(self, "mimetypes_registry", None)
+        if mtr is not None:
+            mimetype=mtr.lookupExtension(extension[1:])
+            if mimetype is None:
+                mimetype=mtr.classify(self.getFileContent())
+
+            if mimetype is not None:
+                return mimetype.normalized()
+
+        try:
+            return mimetypes.types_map[extension]
+        except KeyError:
+            return "application/octet-stream"
 
 
     security.declareProtected(View, "SearchableText")

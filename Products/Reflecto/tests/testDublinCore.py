@@ -63,7 +63,11 @@ class DublinCoreTests(ReflectoZopeTestCase):
         self.assertEqual(self.subdir.Format(), "application/octet-stream")
         self.assertEqual(self.BIGJPEG.Format(), "image/jpeg")
 
-    def testMimeTypeRegistryUsed(self):
+    def testFormatWithMimeTypesRegistryForDirectory(self):
+        self.folder.mimetypes_registry=MockMimeTypeRegistry()
+        self.assertEqual(self.subdir.Format(), "application/octet-stream")
+
+    def testFormatWithMimeTypesRegistryForFile(self):
         mtr = MockMimeTypeRegistry()
         mtr.extensions["jpg"]="audio/mp3"
         self.folder.mimetypes_registry=mtr
