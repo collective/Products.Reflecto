@@ -1,8 +1,11 @@
 Changelog
 =========
 
-2.3 - Unreleased
+2.4 - Unreleased
 ----------------
+
+2.3 - June 19, 2009
+-------------------
 
 - Do no index filesystem data when running in life mode. This guarantees
   no stale data will be in the catalog.
