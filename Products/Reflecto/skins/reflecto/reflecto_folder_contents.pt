@@ -150,7 +150,7 @@
 
                     </td>
                     <td tal:define="url python:test(item_use_view, item_url+'/view',
-                                    test(item_folderish, item_url+'/folder_contents', item_url+'/'));">
+                                    test(item_folderish, item_url+'/folder_contents', item_url));">
                         <span tal:attributes="class item_type_class">
                         <img tal:replace="structure item_icon"/>
                         <a href="#" tal:attributes="href  url;
