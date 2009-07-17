@@ -149,4 +149,10 @@ class Reflector(ReflectoDirectoryBase, Collection, ATCTContent):
         
         return ATCTContent.__bobo_traverse__(self, REQUEST, name)
 
+
+    def _referenceApply(self, methodName, *args, **kwargs):
+        # We have no referenceable children, so pass.
+        pass
+
+
 registerType(Reflector, PROJECTNAME)
