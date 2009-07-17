@@ -41,7 +41,7 @@ Copyright
 =========
 
 Reflecto is Copyright 2007 by Jarn AS
-Reflecto is Copyright 2008 by Simplon
+Reflecto is Copyright 2008-2009 by Simplon
 
 Reflecto is distributed under the GNU General Public License, version 2. A
 copy of the license can be found in GPL.txt in the doc directory.
@@ -66,6 +66,7 @@ Funding
 
 Design and Development --
     Jarn_
+    Simplon_
     Wichert Akkerman, Martijn Pieters
 
 `Universal Encoding Detector`_
@@ -73,5 +74,6 @@ Design and Development --
 
 .. _Trolltech: http://www.trolltech.com/
 .. _Jarn: http://www.jarn.com
+.. _Simplon: http://www.simplon.biz
 .. _Universal Encoding Detector: http://chardet.feedparser.org
 
