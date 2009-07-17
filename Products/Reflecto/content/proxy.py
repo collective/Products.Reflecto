@@ -113,6 +113,16 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     def SearchableText(self):
         return self.Title()
 
+    def _deleteOwnershipAfterAdd(self):
+        # Modified version of AccessControler.Owned, which does not
+        # recurse into children.
+
+        # Only delete _owner if it is an instance attribute.
+        if self.__dict__.get('_owner', _mark) is not _mark:
+            del self._owner
+
+        
+
 ########################################################################
 # IDublinCore implementation
 
