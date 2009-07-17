@@ -4,6 +4,11 @@ Changelog
 2.4 - Unreleased
 ----------------
 
+- Disable recursive handling of AT references in reflectors: proxies
+  filesystem data is never referenceable, so this only slowed things
+  down.
+  [wichert]
+
 - Disable ownership fixing after adding reflector proxies. This prevents
   slow tree walks after copy/pasting reflectors.
   [wichert]
