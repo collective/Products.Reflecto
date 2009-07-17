@@ -29,6 +29,10 @@
     />
 
 <five:traversable class=".content.proxy.BaseProxy"/>
+<five:deprecatedManageAddDelete
+    class=".content.content.reflector.Reflector" />
+
+
 
 <adapter
     zcml:condition="installed Products.TextIndexNG3"

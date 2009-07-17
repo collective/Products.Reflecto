@@ -4,6 +4,10 @@ Changelog
 2.4 - Unreleased
 ----------------
 
+- Silence manage_after* deprecation warning.
+  [wichert]
+
+
 2.3 - June 19, 2009
 -------------------
 
