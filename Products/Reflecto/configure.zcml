@@ -30,7 +30,7 @@
 
 <five:traversable class=".content.proxy.BaseProxy"/>
 <five:deprecatedManageAddDelete
-    class=".content.content.reflector.Reflector" />
+    class=".content.reflector.Reflector" />
 
 
 

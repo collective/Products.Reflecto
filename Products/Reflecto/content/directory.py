@@ -177,6 +177,11 @@ class ReflectoDirectoryBase:
         assert spec is None, 'spec argument unsupported'
         return self.iteritems()
 
+    def _deleteOwnershipAfterAdd(self):
+        # Filesystem objects have no Zope ownership. This prevents expensive
+        # tree walks after copying/adding reflectors.
+        pass
+
 ########################################################################
 # WebDAV implementation
 

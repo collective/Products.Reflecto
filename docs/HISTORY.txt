@@ -4,6 +4,10 @@ Changelog
 2.4 - Unreleased
 ----------------
 
+- Disable ownership fixing after adding reflector proxies. This prevents
+  slow tree walks after copy/pasting reflectors.
+  [wichert]
+
 - Silence manage_after* deprecation warning.
   [wichert]
 

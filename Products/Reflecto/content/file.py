@@ -172,5 +172,11 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
             
         self.indexObject()
 
+    def _deleteOwnershipAfterAdd(self):
+        # Filesystem objects have no Zope ownership. This prevents expensive
+        # tree walks after copying/adding reflectors.
+        pass
+
+
 InitializeClass(ReflectoFile)
 
