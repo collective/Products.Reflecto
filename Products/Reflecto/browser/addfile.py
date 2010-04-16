@@ -1,6 +1,9 @@
 from zope.interface import Interface
 from zope import schema
-from zope.app.i18n import ZopeMessageFactory as _
+try:
+    from zope.app.i18n import ZopeMessageFactory as _
+except ImportError:
+    from zope.i18nmessageid import ZopeMessageFactory as _
 from Products.CMFCore.utils import getToolByName
 from Products.Reflecto.formlib.interfaces import INamedFile
 from Products.Reflecto.formlib.file import NamedFileWidget

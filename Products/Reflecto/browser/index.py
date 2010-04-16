@@ -1,6 +1,9 @@
 from Acquisition import aq_inner
 from zope.interface import implements
-from zope.app.i18n import ZopeMessageFactory as _
+try:
+    from zope.app.i18n import ZopeMessageFactory as _
+except ImportError:
+    from zope.i18nmessageid import ZopeMessageFactory as _
 from Products.Five import BrowserView
 from Products.Reflecto.interfaces import IReflectoFile
 from Products.Reflecto.interfaces import IReflectoDirectory

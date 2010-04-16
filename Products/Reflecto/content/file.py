@@ -27,8 +27,6 @@ import tempfile
 class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
     """A filesystem reflected file."""
 
-    __implements__ = (BaseProxy.__implements__, DynamicType.__implements__)
-
     implements(IReflectoFile)
 
     meta_type = "ReflectoFile"

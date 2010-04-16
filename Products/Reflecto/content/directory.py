@@ -29,8 +29,6 @@ from zope.lifecycleevent import ObjectCopiedEvent
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.permissions import View, DeleteObjects
-from Products.CMFPlone.interfaces.ConstrainTypes \
-        import IConstrainTypes as Z2IConstrainTypes
 from Products.CMFPlone.interfaces.constrains import IConstrainTypes
 from Products.statusmessages.interfaces import IStatusMessage
 
@@ -51,7 +49,6 @@ def _getViewFor(context):
 
 
 class ReflectoDirectoryBase:
-    __implements__ = Z2IConstrainTypes
     implements(IReflectoDirectory, IConstrainTypes)
     
     security = ClassSecurityInfo()

@@ -2,13 +2,13 @@
 
     <subscriber
         for=".interfaces.IReflector
-             zope.app.container.interfaces.IObjectMovedEvent"
+             zope.lifecycleevent.interfaces.IObjectMovedEvent"
         handler=".events.ReflectorMovedHandler"
         />
     
     <subscriber
         for=".interfaces.IReflector
-             zope.app.container.interfaces.IObjectModifiedEvent"
+             zope.lifecycleevent.interfaces.IObjectModifiedEvent"
         handler=".events.ReflectorModifiedHandler"
         />
 

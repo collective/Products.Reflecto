@@ -29,7 +29,6 @@ from webdav import Lockable
 from webdav.common import PreconditionFailed
 from webdav.common import Locked
 from webdav.common import Conflict
-from webdav.WriteLockInterface import WriteLockInterface
 
 from Products.CMFCore.permissions import View
 from Products.CMFCore.interfaces import ICatalogableDublinCore
@@ -296,9 +295,7 @@ class BaseMove:
         if existing:
             # The destination itself exists, so we need to check its locks
             destob = aq_base(parent)._getOb(name)
-            if (IWriteLock.providedBy(destob) or
-                    WriteLockInterface.isImplementedBy(destob)) and \
-                    destob.wl_isLocked():
+            if IWriteLock.providedBy(destob) and destob.wl_isLocked():
                 if ifhdr:
                     itrue = destob.dav__simpleifhandler(
                         REQUEST, RESPONSE, 'COPY', refresh=1)
@@ -306,9 +303,7 @@ class BaseMove:
                         raise PreconditionFailed
                 else:
                     raise Locked, 'Destination is locked.'
-        elif (IWriteLock.providedBy(parent) or
-                WriteLockInterface.isImplementedBy(parent)) and \
-                parent.wl_isLocked():
+        elif IWriteLock.providedBy(parent) and parent.wl_isLocked():
             if ifhdr:
                 parent.dav__simpleifhandler(REQUEST, RESPONSE, 'COPY',
                                             refresh=1)
@@ -400,9 +395,7 @@ class BaseMove:
         if existing:
             # The destination itself exists, so we need to check its locks
             destob = aq_base(parent)._getOb(name)
-            if (IWriteLock.providedBy(destob) or
-                    WriteLockInterface.isImplementedBy(destob)) and \
-                    destob.wl_isLocked():
+            if IWriteLock.providedBy(destob) and destob.wl_isLocked():
                 if ifhdr:
                     itrue = destob.dav__simpleifhandler(
                         REQUEST, RESPONSE, 'MOVE', url=dest, refresh=1)
@@ -410,9 +403,7 @@ class BaseMove:
                         raise PreconditionFailed
                 else:
                     raise Locked, 'Destination is locked.'
-        elif (IWriteLock.providedBy(parent) or
-                WriteLockInterface.isImplementedBy(parent)) and \
-                parent.wl_isLocked():
+        elif IWriteLock.providedBy(parent) and parent.wl_isLocked():
             # There's no existing object in the destination folder, so
             # we need to check the folders locks since we're changing its
             # member list

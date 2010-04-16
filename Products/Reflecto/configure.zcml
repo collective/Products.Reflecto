@@ -28,7 +28,6 @@
     for="Products.CMFCore.interfaces.ISiteRoot"
     />
 
-<five:traversable class=".content.proxy.BaseProxy"/>
 <five:deprecatedManageAddDelete
     class=".content.reflector.Reflector" />
 
@@ -39,15 +38,6 @@
     factory=".catalog.FileProxyIndexableContentAdapter"
     />
 
-<subscriber
-    for=".interfaces.IReflector
-         zope.app.container.interfaces.IObjectMovedEvent"
-    handler=".events.ReflectorMovedHandler"
-    />
+<include file="events.zcml" />
 
-<subscriber
-    for=".interfaces.IReflector
-         zope.app.container.interfaces.IObjectModifiedEvent"
-    handler=".events.ReflectorModifiedHandler"
-    />
 </configure>

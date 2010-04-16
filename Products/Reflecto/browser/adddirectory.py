@@ -6,7 +6,10 @@ from zope.formlib import form
 from zope.schema.interfaces import ValidationError
 
 from zope.app.form.interfaces import WidgetInputError
-from zope.app.i18n import ZopeMessageFactory as _
+try:
+    from zope.app.i18n import ZopeMessageFactory as _
+except ImportError:
+    from zope.i18nmessageid import ZopeMessageFactory as _
 
 from Products.CMFCore.utils import getToolByName
 from Products.Five.formlib.formbase import FormBase
