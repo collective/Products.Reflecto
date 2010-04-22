@@ -9,7 +9,10 @@ from Acquisition import aq_base, aq_inner, aq_parent
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from AccessControl.Permissions import copy_or_move
 from AccessControl.Permissions import access_contents_information
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    from Globals import InitializeClass
 from OFS.CopySupport import CopyError, _cb_decode, _cb_encode, cookie_path
 from OFS.CopySupport import copy_re
 from OFS.event import ObjectWillBeMovedEvent, ObjectWillBeRemovedEvent

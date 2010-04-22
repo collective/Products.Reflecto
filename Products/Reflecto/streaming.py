@@ -1,8 +1,9 @@
+import zope.interface
 from ZPublisher.Iterators import IStreamIterator
 
 class FileIterator(object):
     """ZPublisher iterator for existing already opened."""
-    __implements__ = (IStreamIterator,)
+    zope.interface.implements(IStreamIterator)
 
     def __init__(self, input, streamsize=1<<16):
         self.input=input

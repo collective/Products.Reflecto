@@ -152,18 +152,18 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
 
 
     def Date(self, zone=None):
-        return self._statTime(ST_MTIME).ISO()
+        return self._statTime(ST_MTIME).ISO8601()
 
 
     def CreationDate(self, zone=None):
         # Not all operating systems and file systems keep track of a creation
         # date. If this is not supported this will return the last modification
         # date instead.
-        return self._statTime(ST_CTIME).ISO()
+        return self._statTime(ST_CTIME).ISO8601()
 
 
     def ModificationDate(self, zone=None):
-        return self._statTime(ST_MTIME).ISO()
+        return self._statTime(ST_MTIME).ISO8601()
 
 
     def Type(self):
