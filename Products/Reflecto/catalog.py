@@ -10,6 +10,8 @@ except ImportError:
 
 from Products.Reflecto import chardet
 
+from Products.CMFPlone.utils import safe_unicode
+
 class FileProxyIndexableContentAdapter(object):
     implements(IIndexableContent)
     adapts(IReflectoFile)
@@ -25,11 +27,11 @@ class FileProxyIndexableContentAdapter(object):
 
 
     def indexTitle(self, icc):
-        icc.addContent("Title", unicode(self.context.Title()))
+        icc.addContent("Title", safe_unicode(self.context.Title()))
 
 
     def indexSearchableText(self, icc):
-        icc.addContent("SearchableText", unicode(self.context.Title()))
+        icc.addContent("SearchableText", safe_unicode(self.context.Title()))
         data=self.context.getFileContent()
         if self.hasTextContent:
             encoding=chardet.detect(data)["encoding"]
