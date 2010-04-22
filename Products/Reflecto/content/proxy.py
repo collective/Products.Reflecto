@@ -9,7 +9,10 @@ from Acquisition import aq_base, aq_parent, aq_inner
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import copy_or_move
 from DateTime import DateTime
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    from Globals import InitializeClass
 from OFS.CopySupport import CopyError
 from OFS.SimpleItem import Item
 
