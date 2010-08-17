@@ -10,7 +10,8 @@
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-        <h1 tal:content="object_title" class="documentFirstHeading">
+        <h1 tal:define="object_title context/@@plone_context_state/object_title" 
+            tal:content="object_title" class="documentFirstHeading">
             Title or id
         </h1>
 
@@ -18,7 +19,8 @@
 
         <a href=""
            class="link-parent"
-           tal:define="parent_url python:here.navigationParent(here, template_id)"
+           tal:define="template_id template/getId;
+                       parent_url python:here.navigationParent(here, template_id)"
            tal:condition="parent_url"
            tal:attributes="href parent_url"
            i18n:translate="go_to_parent_url">
@@ -40,6 +42,7 @@
                             use_view_action site_properties/typesUseViewActionInListings|python:();
                             over_limit python: limit_display and len(folderContents) > limit_display;
                             batch python: (over_limit and folderContents[:limit_display]) or folderContents;
+                            isAnon context/@@plone_portal_state/anonymous;
                             show_about python:not isAnon or site_properties.allowAnonymousViewAbout;
                             getIcon nocall:context/@@plone/getIcon">
         <tal:listing condition="batch">
@@ -77,6 +80,7 @@
                                           item_modified item/ModificationDate;
                                           item_created item/CreationDate;
                                           item_icon python:getIcon(item).html_tag();
+                                          normalizeString nocall:context/@@plone/normalizeString;
                                           item_type_class python: 'visualIcon contenttype-' + normalizeString(item_type);
                                           ">
                             <td>
@@ -97,6 +101,7 @@
                             </td>
 
                         <td tal:condition="show_about"
+                            tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime"
                             tal:content="python:toLocalizedTime(item_modified,long_format=1)">
                           August 16, 2001 at 23:35:59
                         </td>

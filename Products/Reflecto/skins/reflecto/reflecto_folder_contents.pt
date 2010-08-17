@@ -25,6 +25,7 @@
       <form name="folderContentsForm"
             method="post"
             action="folder_object"
+            tal:define="here_url context/@@plone_context_state/object_url"
             tal:attributes="action here_url">
 
         <input tal:replace="structure context/@@authenticator/authenticator" /> 
@@ -33,7 +34,8 @@
 
         <h1>
           <tal:block replace="structure python:getattr(here, here.getIcon(1)).tag(alt=here.portal_type)"/>
-          <span tal:content="python: view_title and here.utranslate(view_title) or putils.pretty_title_or_id(here)" tal:omit-tag="">Directory Id</span>
+          <span tal:define="putils context/plone_utils"
+                tal:content="python: view_title and here.utranslate(view_title) or putils.pretty_title_or_id(here)" tal:omit-tag="">Directory Id</span>
         </h1>
 
         <div tal:replace="structure provider:plone.belowcontenttitle" />
@@ -75,6 +77,7 @@
                                    use_folder_contents site_properties/typesLinkToFolderContentsInFC|nothing;
                                    use_view_action site_properties/typesUseViewActionInListings|python:();
                                    query_path python:path('contentFilter/path|nothing') or request.get('path',None);
+                                   is_editable context/@@plone_context_state/is_editable;
                                    canModifyFolderContent is_editable;">
         <div class="visualClear" id="clear-space-before-navigation"><!-- --></div>
 
@@ -113,7 +116,8 @@
             </thead>
 
             <metal:block tal:condition="batch|nothing">
-            <tbody tal:define="getRelativeContentURL nocall:utool/getRelativeContentURL">
+            <tbody tal:define="
+                    getRelativeContentURL nocall:context/portal_url/getRelativeContentURL">
                 <tal:items tal:repeat="item batch">
                    <tr tal:define="oddrow               repeat/item/odd;
                                    item_url             item/getURL|item/absolute_url;
@@ -125,6 +129,7 @@
                                    item_size            item/getObjSize;
                                    item_icon python:getIcon(item).html_tag();
                                    item_modified        item/ModificationDate;
+                                   normalizeString nocall:context/@@plone/normalizeString;
                                    item_type_class      python:'visualIcon contenttype-' + normalizeString(item_type);
                                    item_use_view        python:item_type in use_view_action;
                                    hasGetUrl            python:hasattr(item.aq_explicit, 'getURL');
@@ -164,6 +169,7 @@
                         </span>
 
                         <span class="state-expired"
+                              tal:define="portal context/@@plone_portal_state/portal"
                               tal:condition="python:portal.isExpired(item)"
                               i18n:translate="time_expired">expired</span>
                     </td>
@@ -174,7 +180,8 @@
                       <span tal:condition="python:item_size>0"
                             tal:content="item_size"> size </span>
                     </td>
-                    <td tal:content="python:toLocalizedTime(item_modified, long_format=1)">
+                    <td tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime" 
+                        tal:content="python:toLocalizedTime(item_modified, long_format=1)">
                         08/19/2001 03:01 AM
                     </td>
                     </metal:item_slot>
@@ -189,20 +196,20 @@
 
         <metal:buttons define-macro="folder_buttons">
         <input type="hidden" name="orig_template"
+        tal:define="template_id template/getId"
                tal:attributes="value template_id"/>
-        <tal:buttons tal:repeat="button python:actions.get('folder_buttons', context.portal_actions.listFilteredActionsFor(context).get('folder_buttons', [])) + actions.get('reflector_buttons', [])"
-                     tal:define="contentFilter contentFilter|python:{'path':'/'};
-                                 query_path python:path('contentFilter/path|nothing') or request.get('path',None) or context.portal_type == 'Topic';">
+        <tal:buttons tal:define="contentFilter contentFilter|python:{'path':'/'};
+                                 query_path python:path('contentFilter/path|nothing') or request.get('path',None) or context.portal_type == 'Topic';
+                                 actions python:context.portal_actions.listFilteredActionsFor(context)"
+                     tal:repeat="button python:actions.get('folder_buttons', context.portal_actions.listFilteredActionsFor(context).get('folder_buttons', [])) + actions.get('reflector_buttons', [])">
           <input class="context"
                  type="submit"
                  name=""
                  value=""
-                 tabindex=""
                  tal:condition="python:(batch or here.cb_dataValid and button['id'] in ('paste', 'upload', 'createdir')) and not ( query_path and button['id'] in ['cut','copy','paste']) and not button['id'] == 'change_state'"
                  i18n:attributes="value"
                  tal:attributes="value button/title;
                                  name button/url;
-                                 tabindex tabindex/next;
                                  class python:test((button['id'] in ('paste', 'upload', 'createdir')), 'standalone', 'context')" />
         </tal:buttons>
         </metal:buttons>
