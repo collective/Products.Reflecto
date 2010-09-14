@@ -75,7 +75,7 @@
                                           item_id item/getId|item/id;
                                           item_title_or_id item/pretty_title_or_id;
                                           item_description item/Description;
-                                          item_size python:here.getObjSize(item);
+                                          item_size item/getObjSize;
                                           item_type item/portal_type;
                                           item_modified item/ModificationDate;
                                           item_created item/CreationDate;
