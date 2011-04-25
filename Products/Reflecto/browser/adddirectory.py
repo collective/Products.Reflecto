@@ -12,7 +12,10 @@ except ImportError:
     from zope.i18nmessageid import ZopeMessageFactory as _
 
 from Products.CMFCore.utils import getToolByName
-from Products.Five.formlib.formbase import FormBase
+try:
+    from Products.Five.formlib.formbase import FormBase
+except ImportError:
+    from five.formlib.formbase import FormBase
 
 
 class IDirectoryAddForm(Interface):
