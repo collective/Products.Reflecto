@@ -1,10 +1,12 @@
+import zope.interface
+
 from Products.validation.interfaces.IValidator import IValidator
 from Products.Reflecto.utils import makePathAbsolute
 from Products.Reflecto.utils import cleanPath
 from Products.Reflecto.utils import isDirectory
 
 class isValidFilesystemPath(object):
-    __implements__ = IValidator
+    zope.interface.implements(IValidator)
 
     name = "isValidFilesystemPath"
     title = "Check if a filesystem path is valid"
@@ -14,7 +16,6 @@ class isValidFilesystemPath(object):
     def __init__(self, name=None):
         if name is not None:
             self.name=name
-        
 
     def __call__(self, value, *args, **kwargs):
         path=makePathAbsolute(cleanPath(value))

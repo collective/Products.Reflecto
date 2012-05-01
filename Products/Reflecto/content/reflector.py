@@ -91,8 +91,6 @@ if HAS_CACHESETUP:
 class Reflector(ReflectoDirectoryBase, Collection, ATCTContent):
     """Reflection of a filesystem folder."""
 
-    __implements__ = (ReflectoDirectoryBase.__implements__,
-                      ATCTContent.__implements__)
     implements(IReflector)
 
     security = ClassSecurityInfo()

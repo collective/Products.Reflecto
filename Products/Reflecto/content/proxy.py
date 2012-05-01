@@ -9,7 +9,10 @@ from Acquisition import aq_base, aq_parent, aq_inner
 from AccessControl import ClassSecurityInfo
 from AccessControl.Permissions import copy_or_move
 from DateTime import DateTime
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    from Globals import InitializeClass
 from OFS.CopySupport import CopyError
 from OFS.SimpleItem import Item
 
@@ -29,7 +32,6 @@ from webdav import Lockable
 from webdav.common import PreconditionFailed
 from webdav.common import Locked
 from webdav.common import Conflict
-from webdav.WriteLockInterface import WriteLockInterface
 
 from Products.CMFCore.permissions import View
 from Products.CMFCore.interfaces import ICatalogableDublinCore
@@ -153,18 +155,18 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
 
 
     def Date(self, zone=None):
-        return self._statTime(ST_MTIME).ISO()
+        return self._statTime(ST_MTIME).ISO8601()
 
 
     def CreationDate(self, zone=None):
         # Not all operating systems and file systems keep track of a creation
         # date. If this is not supported this will return the last modification
         # date instead.
-        return self._statTime(ST_CTIME).ISO()
+        return self._statTime(ST_CTIME).ISO8601()
 
 
     def ModificationDate(self, zone=None):
-        return self._statTime(ST_MTIME).ISO()
+        return self._statTime(ST_MTIME).ISO8601()
 
 
     def Type(self):
@@ -296,9 +298,7 @@ class BaseMove:
         if existing:
             # The destination itself exists, so we need to check its locks
             destob = aq_base(parent)._getOb(name)
-            if (IWriteLock.providedBy(destob) or
-                    WriteLockInterface.isImplementedBy(destob)) and \
-                    destob.wl_isLocked():
+            if IWriteLock.providedBy(destob) and destob.wl_isLocked():
                 if ifhdr:
                     itrue = destob.dav__simpleifhandler(
                         REQUEST, RESPONSE, 'COPY', refresh=1)
@@ -306,9 +306,7 @@ class BaseMove:
                         raise PreconditionFailed
                 else:
                     raise Locked, 'Destination is locked.'
-        elif (IWriteLock.providedBy(parent) or
-                WriteLockInterface.isImplementedBy(parent)) and \
-                parent.wl_isLocked():
+        elif IWriteLock.providedBy(parent) and parent.wl_isLocked():
             if ifhdr:
                 parent.dav__simpleifhandler(REQUEST, RESPONSE, 'COPY',
                                             refresh=1)
@@ -400,9 +398,7 @@ class BaseMove:
         if existing:
             # The destination itself exists, so we need to check its locks
             destob = aq_base(parent)._getOb(name)
-            if (IWriteLock.providedBy(destob) or
-                    WriteLockInterface.isImplementedBy(destob)) and \
-                    destob.wl_isLocked():
+            if IWriteLock.providedBy(destob) and destob.wl_isLocked():
                 if ifhdr:
                     itrue = destob.dav__simpleifhandler(
                         REQUEST, RESPONSE, 'MOVE', url=dest, refresh=1)
@@ -410,9 +406,7 @@ class BaseMove:
                         raise PreconditionFailed
                 else:
                     raise Locked, 'Destination is locked.'
-        elif (IWriteLock.providedBy(parent) or
-                WriteLockInterface.isImplementedBy(parent)) and \
-                parent.wl_isLocked():
+        elif IWriteLock.providedBy(parent) and parent.wl_isLocked():
             # There's no existing object in the destination folder, so
             # we need to check the folders locks since we're changing its
             # member list

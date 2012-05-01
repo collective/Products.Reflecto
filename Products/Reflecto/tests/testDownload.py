@@ -49,7 +49,7 @@ class DirectoryDownloadTests(ReflectoZopeTestCase):
 
     def testDownloadReturnsIterator(self):
         result=self.view()
-        self.failUnless(IStreamIterator.isImplementedBy(result))
+        self.failUnless(IStreamIterator.providedBy(result))
 
     def testIteratorDataAtStartOfFile(self):
         # Originally I forgot to seek to the start of the file...

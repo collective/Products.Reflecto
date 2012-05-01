@@ -16,11 +16,11 @@ from OFS.tests.testCopySupport import UnitTestSecurityPolicy, UnitTestUser
 
 from zope.component.testing import PlacelessSetup as CASetup
 from zope.component import provideAdapter
-from zope.app.container.interfaces import IObjectMovedEvent, IObjectRemovedEvent
+from zope.lifecycleevent.interfaces import (
+    IObjectMovedEvent, IObjectRemovedEvent, IObjectCopiedEvent)
 from zope.app.container.interfaces import IContainerModifiedEvent
-from zope.app.event.interfaces import IObjectCopiedEvent
-from zope.app.event.tests.placelesssetup import PlacelessSetup as ESetup
-from zope.app.event.tests.placelesssetup import getEvents
+from zope.component.eventtesting import PlacelessSetup as ESetup
+from zope.component.eventtesting import getEvents
 from zope.app.testing import ztapi
 from Products.Reflecto.tests.unitcase import ReflectoUnitTestCase
 from Products.Reflecto.interfaces import IReflectoDirectory

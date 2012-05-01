@@ -4,6 +4,13 @@ Changelog
 2.5 - Unreleased
 ----------------
 
+- Fixed broken imports for Plone 4.1 compatibility
+  [swampmonkey]
+
+- Make compatible with Plone 4/Zope 2.12 by removing z2-style interfaces
+  and adjusting some imports
+  [tom_gross]
+
 
 2.4 - July 17, 2009
 -------------------

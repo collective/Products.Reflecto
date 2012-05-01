@@ -9,7 +9,10 @@ from Acquisition import aq_base, aq_inner, aq_parent
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from AccessControl.Permissions import copy_or_move
 from AccessControl.Permissions import access_contents_information
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    from Globals import InitializeClass
 from OFS.CopySupport import CopyError, _cb_decode, _cb_encode, cookie_path
 from OFS.CopySupport import copy_re
 from OFS.event import ObjectWillBeMovedEvent, ObjectWillBeRemovedEvent
@@ -29,8 +32,6 @@ from zope.lifecycleevent import ObjectCopiedEvent
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.permissions import View, DeleteObjects
-from Products.CMFPlone.interfaces.ConstrainTypes \
-        import IConstrainTypes as Z2IConstrainTypes
 from Products.CMFPlone.interfaces.constrains import IConstrainTypes
 from Products.statusmessages.interfaces import IStatusMessage
 
@@ -51,7 +52,6 @@ def _getViewFor(context):
 
 
 class ReflectoDirectoryBase:
-    __implements__ = Z2IConstrainTypes
     implements(IReflectoDirectory, IConstrainTypes)
     
     security = ClassSecurityInfo()

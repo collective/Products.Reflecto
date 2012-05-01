@@ -1,5 +1,8 @@
 from Products.Five.browser import BrowserView
-from Products.CMFPlone import Batch
+try:
+    from Products.CMFPlone import Batch
+except ImportError:
+    from Products.CMFPlone.PloneBatch import Batch
 
 class LifeContents(BrowserView):
 

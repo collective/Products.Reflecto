@@ -2,7 +2,10 @@ import mimetypes
 from zope.interface import implements
 
 from AccessControl import ClassSecurityInfo
-from Globals import InitializeClass
+try:
+    from App.class_init import InitializeClass
+except ImportError:
+    from Globals import InitializeClass
 from ZPublisher.Iterators import filestream_iterator
 from webdav.Resource import Resource
 
@@ -26,8 +29,6 @@ import tempfile
 
 class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
     """A filesystem reflected file."""
-
-    __implements__ = (BaseProxy.__implements__, DynamicType.__implements__)
 
     implements(IReflectoFile)
 

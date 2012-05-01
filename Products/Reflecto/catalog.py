@@ -1,9 +1,16 @@
 from zope.interface import implements
 from zope.component import adapts
 from Products.Reflecto.interfaces import IReflectoFile
-from textindexng.interfaces.indexable import IIndexableContent
-from textindexng.content import IndexContentCollector
+try:
+    from zopyx.txng3.core.interfaces import IIndexableContent
+    from zopyx.txng3.core.content import IndexContentCollector
+except ImportError:
+    from textindexng.interfaces.indexable import IIndexableContent
+    from textindexng.content import IndexContentCollector
+
 from Products.Reflecto import chardet
+
+from Products.CMFPlone.utils import safe_unicode
 
 class FileProxyIndexableContentAdapter(object):
     implements(IIndexableContent)
@@ -20,11 +27,11 @@ class FileProxyIndexableContentAdapter(object):
 
 
     def indexTitle(self, icc):
-        icc.addContent("Title", unicode(self.context.Title()))
+        icc.addContent("Title", safe_unicode(self.context.Title()))
 
 
     def indexSearchableText(self, icc):
-        icc.addContent("SearchableText", unicode(self.context.Title()))
+        icc.addContent("SearchableText", safe_unicode(self.context.Title()))
         data=self.context.getFileContent()
         if self.hasTextContent:
             encoding=chardet.detect(data)["encoding"]
