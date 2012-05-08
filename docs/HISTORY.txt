@@ -1,8 +1,8 @@
 Changelog
 =========
 
-2.5 - Unreleased
-----------------
+2.5 - May 8, 2012
+-----------------
 
 - Fixed broken imports for Plone 4.1 compatibility
   [swampmonkey]
