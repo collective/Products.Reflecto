@@ -173,6 +173,13 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
             
         self.indexObject()
 
+########################################################################
+# Sharing
+
+    @property
+    def __ac_local_roles__(self):
+        # Prove we can assign roles
+        return {'admin': ['Owner'], 'AuthenticatedUsers': [u'Reader']}
 
 
 InitializeClass(ReflectoFile)

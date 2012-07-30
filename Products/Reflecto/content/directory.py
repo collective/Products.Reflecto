@@ -482,6 +482,14 @@ class ReflectoDirectoryBase:
         
         return result
 
+########################################################################
+# Sharing
+
+    @property
+    def __ac_local_roles__(self):
+        # Prove we can assign roles
+        return {'admin': ['Owner'], 'AuthenticatedUsers': [u'Reader']}
+
 # mix in selected methods from DictMixin
 # We don't want *everything* because some cause problems for us
 for m in ('__contains__', 'iterkeys', 'itervalues', 'values', 'items', 'get'):
