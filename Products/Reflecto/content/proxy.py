@@ -115,7 +115,12 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
             return cmp(id(self), id(other))
         
     def SearchableText(self):
-        return self.Title()
+        text = [self.Title()]
+        # Also index the filename separately without extension and spilt on dot.
+        base = os.path.splitext(self.getId())[0]
+        if base:
+            text.append(base.replace('.', ' '))
+        return ' '.join(text)
 
     def _deleteOwnershipAfterAdd(self):
         # Modified version of AccessControler.Owned, which does not

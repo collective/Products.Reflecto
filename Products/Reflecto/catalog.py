@@ -1,3 +1,4 @@
+import os
 from zope.interface import implements
 from zope.component import adapts
 from Products.Reflecto.interfaces import IReflectoFile
@@ -25,13 +26,20 @@ class FileProxyIndexableContentAdapter(object):
         (major,minor)=self.context.Format().split("/", 1)
         return major in [ "message", "text" ]
 
+    def _index_filename(self, icc, field):
+        icc.addContent(field, safe_unicode(self.context.Title()))
+        path = os.path.splitext(self.context.getId())[0]
+        if path:
+            # Index the filename separately without extension and split on dot.
+            path = safe_unicode(path)
+            path.replace(u'.', u' ')
+            icc.addContent(field, safe_unicode(path))
 
     def indexTitle(self, icc):
-        icc.addContent("Title", safe_unicode(self.context.Title()))
-
+        self._index_filename(icc, 'Title')
 
     def indexSearchableText(self, icc):
-        icc.addContent("SearchableText", safe_unicode(self.context.Title()))
+        self._index_filename(icc, 'SearchableText')
         data=self.context.getFileContent()
         if self.hasTextContent:
             encoding=chardet.detect(data)["encoding"]
@@ -53,4 +61,3 @@ class FileProxyIndexableContentAdapter(object):
             return None
 
         return icc
-

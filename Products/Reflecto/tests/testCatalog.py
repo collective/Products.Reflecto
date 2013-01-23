@@ -22,6 +22,7 @@ from Products.Reflecto.content.file import ReflectoFile
 from Products.Reflecto.content.directory import ReflectoDirectory
 from Products.Reflecto.tests.utils import MockReflector
 
+
 class IndexTests(unittest.TestCase):
     def setUp(self):
         self.reflector = MockReflector()
@@ -35,11 +36,11 @@ class IndexTests(unittest.TestCase):
 
     def testBinarySearchableText(self):
         proxy=ReflectoFile(("reflecto.jpg",)).__of__(self.reflector)
-        self.assertEqual(proxy.SearchableText(), "reflecto.jpg")
+        self.assertEqual(proxy.SearchableText(), "reflecto.jpg reflecto")
 
     def testDirectorySearchableText(self):
         proxy = ReflectoDirectory(('subdir',)).__of__(self.reflector)
-        self.assertEqual(proxy.SearchableText(), 'subdir')
+        self.assertEqual(proxy.SearchableText(), 'subdir subdir')
 
 
 class Converter(object):

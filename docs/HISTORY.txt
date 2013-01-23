@@ -1,6 +1,14 @@
 Changelog
 =========
 
+3.0 - Unreleased
+------------------
+
+- Do manual splitting of filenames when indexing content. This allows searching
+  for filenames. This previously did not work because the standard indexer strips
+  dots, which does not work well for filenames.
+
+
 2.5.1 - May 8, 2012
 -------------------
 
