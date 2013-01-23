@@ -6,6 +6,7 @@ import stat
 from types import StringType
 from UserDict import DictMixin
 
+from Acquisition import aq_acquire
 from Acquisition import aq_base, aq_inner, aq_parent
 from AccessControl import ClassSecurityInfo, getSecurityManager
 from AccessControl.Permissions import copy_or_move
@@ -62,15 +63,16 @@ class ReflectoDirectoryBase:
     security = ClassSecurityInfo()
 
     isPrincipiaFolderish = True
-    
+
+
     security.declarePrivate('acceptableFilename')
     def acceptableFilename(self, name):
-        """Check if a filename is allowed."""
-        try:
-            checkValidId(self, name, True)
-        except BadRequest:
-            return False
-        if name.startswith('@@') or name[0] == '.':
+        """Check if a filename is allowed.
+
+        Note that we are more liberal than Zope itself."
+        """
+        if name.startswith('@@') or name.startswith('.') or \
+                name.startswith('++'):
             return False
         return True
 
