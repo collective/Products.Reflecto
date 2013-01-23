@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 import os
 
-version = '2.5.1'
+version = '3.0b1'
 
 setup(name='Products.Reflecto',
       version=version,
@@ -9,9 +9,12 @@ setup(name='Products.Reflecto',
       long_description=open("README.txt").read() + "\n" +
                        open(os.path.join("docs", "HISTORY.txt")).read(),
       classifiers=[
-        "Framework :: Plone",
-        "Programming Language :: Python",
-        "Topic :: Software Development :: Libraries :: Python Modules",
+          "Framework :: Plone :: 3.3",
+          "Framework :: Plone :: 4.0",
+          "Framework :: Plone :: 4.1",
+          "Framework :: Plone :: 4.2",
+          "Programming Language :: Python",
+          "Topic :: Software Development :: Libraries :: Python Modules",
         ],
       keywords='plone filesystem',
       author='Jarn AS',
@@ -24,8 +27,5 @@ setup(name='Products.Reflecto',
       install_requires=[
           'setuptools',
           'zope.app.file',
-      ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      ]
       )

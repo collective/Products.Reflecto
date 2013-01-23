@@ -1,8 +1,8 @@
 Changelog
 =========
 
-3.0 - Unreleased
-------------------
+3.0b1 - January 23, 2013
+------------------------
 
 - Make sure reflected files implement all three methods (!!) to return the
   content type. This fixes problems displaying text files.
