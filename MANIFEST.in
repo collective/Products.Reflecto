@@ -1,3 +1,8 @@
-include *
-recursive-include Products *
+include *.cfg
+global-exclude *.pyc
+global-exclude *.pyo
+recursive-include Products *.zcml
+graft Products/Reflecto/tests/sample
+graft Products/Reflecto/doc
+graft Products/Reflecto/profile
 recursive-include docs *
