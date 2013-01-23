@@ -124,6 +124,9 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
         except KeyError:
             return "application/octet-stream"
 
+    get_content_type = Format
+    getContentType = Format
+
 
     security.declareProtected(View, "SearchableText")
     def SearchableText(self):

@@ -4,6 +4,9 @@ Changelog
 3.0 - Unreleased
 ------------------
 
+- Make sure reflected files implement all three methods (!!) to return the
+  content type. This fixes problems displaying text files.
+
 - Log skipped files when iterating over directory contents.
 
 - Do manual splitting of filenames when indexing content. This allows searching
