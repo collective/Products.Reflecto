@@ -21,7 +21,6 @@ from zope.lifecycleevent.interfaces import (
 from zope.app.container.interfaces import IContainerModifiedEvent
 from zope.component.eventtesting import PlacelessSetup as ESetup
 from zope.component.eventtesting import getEvents
-from zope.app.testing import ztapi
 from Products.Reflecto.tests.unitcase import ReflectoUnitTestCase
 from Products.Reflecto.interfaces import IReflectoDirectory
 
