@@ -132,7 +132,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     def getStatus(self):
         """Return file status from our physical file.
 
-        Since a stat(2) call is expensive on some operatin systems we cache
+        Since a stat(2) call is expensive on some operating systems we cache
         the result.
         """
         if not hasattr(self, "_stat"):

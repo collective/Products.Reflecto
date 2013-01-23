@@ -73,7 +73,7 @@ class ReflectoDirectoryBase:
     def acceptableFile(self, name):
         """Check if the file is of an acceptable type.
 
-        We need to ignore devices and sockes.
+        We need to ignore devices and sockets.
         """
         try:
             mode=os.stat(name)[stat.ST_MODE]
