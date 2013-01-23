@@ -46,6 +46,8 @@ from Products.Reflecto.interfaces import IReflectoDirectory
 system_timezone = DateTime().timezone()
 
 
+_mark = []
+
 def indexWrapper(cls, method):
     method=getattr(cls, method)
 
