@@ -4,6 +4,8 @@ Changelog
 3.0 - Unreleased
 ------------------
 
+- Log skipped files when iterating over directory contents.
+
 - Do manual splitting of filenames when indexing content. This allows searching
   for filenames. This previously did not work because the standard indexer strips
   dots, which does not work well for filenames.

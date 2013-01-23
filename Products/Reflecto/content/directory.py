@@ -1,4 +1,5 @@
 import errno
+import logging
 import os
 import shutil
 import stat
@@ -46,6 +47,10 @@ from Products.Reflecto.utils import addMarkerInterface
 
 from ZPublisher import xmlrpc
 from webdav.NullResource import NullResource
+
+
+log = logging.getLogger(__name__)
+
 
 def _getViewFor(context):
         return context.reflector_view
@@ -112,9 +117,12 @@ class ReflectoDirectoryBase:
         
         try:
             for name in os.listdir(path):
+                full_path = os.path.join(path, name)
                 if not self.acceptableFilename(name):
+                    log.info('Skipping bad filename: %s' % full_path)
                     continue
-                if not self.acceptableFile(os.path.join(path, name)):
+                if not self.acceptableFile(full_path):
+                    log.info('Skipping invalid file type: %s' % full_path)
                     continue
                 yield name
         except OSError, e:
