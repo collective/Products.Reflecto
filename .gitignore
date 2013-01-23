@@ -1,0 +1,9 @@
+*.pyc
+*.pyo
+/.installed.cfg
+/bin
+/develop-eggs
+/fake-eggs
+/parts
+/var
+/Products.Reflecto.egg-info
