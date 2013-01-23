@@ -77,17 +77,15 @@ class DirectoryTests(ReflectoUnitTestCase):
         self.assertTrue(self.reflecto.has_key('subdir'))
         self.assertFalse(self.reflecto.has_key('nonesuch'))
         
-    def testAcceptableNames(self):
+    def test_acceptableFilename(self):
         self.assertFalse(self.reflecto.acceptableFilename("@@viewname"))
         self.assertTrue(self.reflecto.acceptableFilename("@viewname"))
         self.assertFalse(self.reflecto.acceptableFilename("++view++viewname"))
         self.assertFalse(self.reflecto.acceptableFilename(".."))
         self.assertFalse(self.reflecto.acceptableFilename("aq_parent"))
-        # "Unicode" in fullwidth characters
-        self.assertFalse(self.reflecto.acceptableFilename(
-            u"\uff35\uff4e\uff49\uff43\uff4f\uff44\uff45"))
-        
-        
+        self.assertTrue(self.reflecto.acceptableFilename('Compo\xcc\x81te.txt'))
+
+
 class MockIndexView:
     called = False
     def index(self):

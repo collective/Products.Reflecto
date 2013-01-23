@@ -72,7 +72,7 @@ class ReflectoDirectoryBase:
         Note that we are more liberal than Zope itself."
         """
         if name.startswith('@@') or name.startswith('.') or \
-                name.startswith('++'):
+                name.startswith('++') or name.startswith('aq_'):
             return False
         return True
 
