@@ -1,8 +1,8 @@
 Changelog
 =========
 
-3.0b2 - Unreleased
-------------------------
+3.0 - June 18, 2013
+-------------------
 
 - If plone.app.uuid is present, provide a UUID for reflected files.
   The UUID is based on the main reflector's UID and the file's path.
