@@ -31,13 +31,19 @@
 <five:deprecatedManageAddDelete
     class=".content.reflector.Reflector" />
 
-
-
 <adapter
     zcml:condition="installed Products.TextIndexNG3"
     factory=".catalog.FileProxyIndexableContentAdapter"
     />
 
 <include file="events.zcml" />
+
+<configure
+    zcml:condition="installed plone.app.uuid">
+  <class class=".content.proxy.BaseProxy">
+    <implements interface="plone.uuid.interfaces.IUUIDAware" />
+  </class>
+  <adapter factory=".uuids.reflectoUUID" />
+</configure>
 
 </configure>
