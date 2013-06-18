@@ -1,6 +1,5 @@
 from Products.Reflecto.interfaces import IReflectoProxy
 from Products.Reflecto.interfaces import IReflector
-from Products.Reflecto.utils import makePathAbsolute
 from hashlib import md5
 from plone.uuid.interfaces import IUUID
 from uuid import UUID
@@ -18,10 +17,6 @@ def reflectoUUID(context):
         return context._at_uid
 
     # Return a UUID based on the filesystem path
-    path = os.path.join(
-        makePathAbsolute(
-            context.getReflector().relativePath
-        ),
-        *context.getPathToReflectoParent()
-    )
-    return str(UUID(bytes=md5('Reflecto' + path).digest()))
+    path = os.path.join(*context.getPathToReflectoParent())
+    reflector_uid = context.getReflector()._at_uid
+    return str(UUID(bytes=md5(reflector_uid + path).digest()))
