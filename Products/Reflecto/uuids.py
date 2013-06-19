@@ -14,7 +14,7 @@ def reflectoUUID(context):
     # Short-circuit for top level.
     # We have to get the UID directly to avoid recursing
     if IReflector.providedBy(context):
-        return context._at_uid
+        return getattr(context, '_at_uid', None)
 
     # Return a UUID based on the filesystem path
     path = os.path.join(*context.getPathToReflectoParent())
