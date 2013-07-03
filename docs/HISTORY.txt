@@ -4,6 +4,8 @@ Changelog
 3.0.2 - unreleased
 ------------------
 
+- Add explicit zope.app.container dependency.
+  [danjacka]
 
 3.0.1 - June 19, 2013
 ---------------------
