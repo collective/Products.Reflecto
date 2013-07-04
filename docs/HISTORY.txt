@@ -4,6 +4,11 @@ Changelog
 3.0.2 - unreleased
 ------------------
 
+- Changed the technique used to avoid indexing reflected items
+  in live mode. The new technique does not conflict with
+  collective.indexing's monkey patches of indexing methods.
+  [davisagli]
+
 - Detect charset of files and encode as utf8 when indexing
   SearchableText, even when not using textindexng.
   [davisagli]

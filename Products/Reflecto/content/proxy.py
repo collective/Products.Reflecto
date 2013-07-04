@@ -48,17 +48,6 @@ system_timezone = DateTime().timezone()
 
 _mark = []
 
-def indexWrapper(cls, method):
-    method=getattr(cls, method)
-
-    def wrapper(self, *args, **kwargs):
-        reflector=self.getReflector()
-        if aq_base(reflector) is not aq_base(self) and reflector.getLife():
-            return
-        return method(self, *args, **kwargs)
-
-    return wrapper
-
 
 class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     meta_type="Reflecto proxy"
@@ -73,12 +62,14 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
         self.id=path[-1]
         self._path=path
 
-    # Wrap indexing methods to make sure objects are not in the catalog
-    # when running the reflecto in life mode. Note that we do not wrap
-    # unindexObject - unindexing can never be a bad thing in this situation.
-    indexObject = indexWrapper(CMFCatalogAware, "indexObject")
-    reindexObject = indexWrapper(CMFCatalogAware, "reindexObject")
-    reindexObjectSecurity = indexWrapper(CMFCatalogAware, "reindexObjectSecurity")
+    # The indexing methods (indexObject, reindexObject) of CMFCatalogAware
+    # call _getCatalogTool to obtain a catalog. This gives us a hook to
+    # keep the proxy from being catalog when the reflector is in live mode.
+    def _getCatalogTool(self):
+        reflector = self.getReflector()
+        if aq_base(reflector) is not aq_base(self) and reflector.getLife():
+            return
+        return super(BaseProxy, self)._getCatalogTool()
 
     security.declareProtected(View, "getReflector")
     def getReflector(self):
