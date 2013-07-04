@@ -4,6 +4,10 @@ Changelog
 3.0.2 - unreleased
 ------------------
 
+- Detect charset of files and encode as utf8 when indexing
+  SearchableText, even when not using textindexng.
+  [davisagli]
+
 - Add explicit zope.app.container dependency.
   [danjacka]
 

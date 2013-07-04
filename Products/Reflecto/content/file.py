@@ -17,6 +17,7 @@ from Products.Reflecto.interfaces import IReflectoFile
 from Products.Reflecto.content.proxy import BaseProxy, BaseMove
 from Products.Reflecto.config import HAS_CACHESETUP
 from Products.Reflecto.permissions import AddFilesystemObject
+from Products.Reflecto import chardet
 
 from ZServer import LARGE_FILE_THRESHOLD
 from App.Common import rfc1123_date
@@ -136,7 +137,9 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
         """
         result = BaseProxy.SearchableText(self)
         if self.Format().startswith("text/"):
-            result += ' ' + self.get_data()
+            data = self.get_data()
+            encoding = chardet.detect(data)["encoding"]
+            result += data.decode(encoding, 'ignore').encode('utf8')
 
         return result
     
