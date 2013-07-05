@@ -1,5 +1,6 @@
 import mimetypes
 from zope.interface import implements
+from zope.interface import Interface
 
 from AccessControl import ClassSecurityInfo
 try:
@@ -8,6 +9,15 @@ except ImportError:
     from Globals import InitializeClass
 from ZPublisher.Iterators import filestream_iterator
 from webdav.Resource import Resource
+
+try:
+    from zopyx.txng3.core.interfaces import IIndexableContent
+except ImportError:
+    try:
+        from textindexng.interfaces.indexable import IIndexableContent
+    except ImportError:
+        class IIndexableContent(Interface):
+            pass
 
 from Products.CMFCore.DynamicType import DynamicType
 from Products.CMFCore.permissions import View
@@ -133,13 +143,25 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
     def SearchableText(self):
         """Return textual content of the file for the search index.
         
-        This is only used If TextIndexNG3 is not installed.
+        This is usually only used If TextIndexNG3 is not installed.
+        But if collective.solr is used then this is used even with
+        TextIndexNG3.
         """
         result = BaseProxy.SearchableText(self)
-        if self.Format().startswith("text/"):
+
+        indexable = IIndexableContent(self, None)
+        if indexable is not None:
+            # We might get here if TextIndexNG3 is installed but
+            # the content is being indexed by collective.solr.
+            # In this case, use TextIndexNG3 to obtain the text for
+            # binary files.
+            icc = indexable.indexableContent(['SearchableText'])
+            result = ' '.join(info['content'].encode('utf8')
+                              for info in icc.getFieldData('SearchableText'))
+        elif self.Format().startswith("text/"):
             data = self.get_data()
             encoding = chardet.detect(data)["encoding"]
-            result += data.decode(encoding, 'ignore').encode('utf8')
+            result += ' ' + data.decode(encoding, 'ignore').encode('utf8')
 
         return result
     

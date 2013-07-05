@@ -1,9 +1,13 @@
 Changelog
 =========
 
-3.0.3 - unreleased
-------------------
+3.0.3 - July 5, 2013
+--------------------
 
+- Make ReflectoFile's SearchableText method use TextIndexNG3 converters
+  if available. This is useful when indexing using collective.solr
+  instead of TextIndexNG3 or the default Plone catalog.
+  [davisagli]
 
 3.0.2 - July 3, 2013
 --------------------
