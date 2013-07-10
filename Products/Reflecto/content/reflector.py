@@ -125,6 +125,9 @@ class Reflector(ReflectoDirectoryBase, Collection, ATCTContent):
     def getFilesystemPath(self):
         return makePathAbsolute(self.getRelativePath())
 
+    security.declarePrivate('getPathOfReflectoParent')
+    getPathOfReflectoParent = getFilesystemPath
+
     security.declarePrivate("getPathToReflectoParent")
     def getPathToReflectoParent(self):
         return ()

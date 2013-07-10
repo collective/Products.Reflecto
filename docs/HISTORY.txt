@@ -1,9 +1,13 @@
 Changelog
 =========
 
-3.0.4 - unreleased
-------------------
+3.0.4 - July 9, 2013
+--------------------
 
+- Pass the base reflector path to sub-proxies when instantiating them
+  so they can determine their filesystem path even when not
+  acquisition-wrapped. Needed for compatibility with collective.indexing.
+  [davisagli]
 
 3.0.3 - July 5, 2013
 --------------------

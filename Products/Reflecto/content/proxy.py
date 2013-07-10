@@ -58,9 +58,10 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     
     _path = ()
 
-    def __init__(self, path):
+    def __init__(self, path, reflectorpath=None):
         self.id=path[-1]
         self._path=path
+        self.reflectorpath = reflectorpath
 
     # The indexing methods (indexObject, reindexObject) of CMFCatalogAware
     # call _getCatalogTool to obtain a catalog. This gives us a hook to
@@ -84,6 +85,13 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
         raise RuntimeError('Reflecto object cannot exist outside an IReflector '
                            'acquisition chain')
 
+    security.declarePrivate('getPathOfReflectoParent')
+    def getPathOfReflectoParent(self):
+        if self.reflectorpath is not None:
+            return self.reflectorpath
+        else:
+            return self.getReflector().getFilesystemPath()
+
     security.declarePrivate('getPathToReflectoParent')
     def getPathToReflectoParent(self):
         """Return a path from the reflex object to this proxy.
@@ -96,8 +104,9 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     def getFilesystemPath(self):
         """Return the filesystem path for this object.
         """
-        return os.path.join(self.getReflector().getFilesystemPath(),
-                                *self.getPathToReflectoParent())
+        return os.path.join(
+            self.getPathOfReflectoParent(),
+            *self.getPathToReflectoParent())
 
     def __cmp__(self, other):
         try:
