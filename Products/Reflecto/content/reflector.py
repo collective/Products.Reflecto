@@ -123,7 +123,10 @@ class Reflector(ReflectoDirectoryBase, Collection, ATCTContent):
     
     security.declareProtected(View, "getFilesystemPath")
     def getFilesystemPath(self):
-        return makePathAbsolute(self.getRelativePath())
+        relpath = self.getRelativePath()
+        if not relpath:
+            raise AttributeError
+        return makePathAbsolute(relpath)
 
     security.declarePrivate('getPathOfReflectoParent')
     getPathOfReflectoParent = getFilesystemPath
