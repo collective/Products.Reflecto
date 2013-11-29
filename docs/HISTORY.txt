@@ -4,6 +4,9 @@ Changelog
 3.0.6 - unreleased
 ------------------
 
+- Fixed an issue with some files that do not return any encoding.
+  Let's fallback to ASCII.
+  [keul]
 
 3.0.5 - July 11, 2013
 ---------------------

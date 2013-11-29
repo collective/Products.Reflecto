@@ -160,7 +160,7 @@ class ReflectoFile(BaseMove, Resource, BaseProxy, DynamicType):
                               for info in icc.getFieldData('SearchableText'))
         elif self.Format().startswith("text/"):
             data = self.get_data()
-            encoding = chardet.detect(data)["encoding"]
+            encoding = chardet.detect(data)["encoding"] or 'ascii'
             result += ' ' + data.decode(encoding, 'ignore').encode('utf8')
 
         return result
