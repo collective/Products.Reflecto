@@ -11,7 +11,7 @@ class FileDownloadView(BrowserView):
     def __call__(self):
         self.request.response.setHeader(
             'Content-Disposition',
-            'attachment; filename=%s' % self.context.getId())
+            'attachment; filename="%s"' % self.context.getId())
         return self.context()
 
 

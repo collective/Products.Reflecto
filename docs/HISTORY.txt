@@ -8,6 +8,11 @@ Changelog
   Let's fallback to ASCII.
   [keul]
 
+- Quoting filename in ``Content-Disposition`` header to prevent
+  ``ERR_RESPONSE_HEADERS_MULTIPLE_CONTENT_DISPOSITION`` problem
+  with Chrome browser.
+  [keul]
+
 3.0.5 - July 11, 2013
 ---------------------
 
