@@ -27,12 +27,15 @@ class IndexTests(unittest.TestCase):
     def setUp(self):
         self.reflector = MockReflector()
 
-
     def testTextualSearchableText(self):
         proxy=ReflectoFile(("reflecto.txt",)).__of__(self.reflector)
         self.failUnless("superhero" in proxy.SearchableText())
         self.failUnless("reflecto.txt" in proxy.SearchableText())
 
+    def testEmptyTextualSearchableText(self):
+        proxy=ReflectoFile(("subdir/emptyfile.txt",)).__of__(self.reflector)
+        self.failUnless("superhero" in proxy.SearchableText())
+        self.failUnless("reflecto.txt" in proxy.SearchableText())
 
     def testBinarySearchableText(self):
         proxy=ReflectoFile(("reflecto.jpg",)).__of__(self.reflector)
