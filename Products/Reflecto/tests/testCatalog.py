@@ -34,8 +34,8 @@ class IndexTests(unittest.TestCase):
 
     def testEmptyTextualSearchableText(self):
         proxy=ReflectoFile(("subdir/emptyfile.txt",)).__of__(self.reflector)
-        self.failUnless("superhero" in proxy.SearchableText())
-        self.failUnless("reflecto.txt" in proxy.SearchableText())
+        self.assertEqual(proxy.SearchableText(),
+            'subdir/emptyfile.txt subdir/emptyfile ')
 
     def testBinarySearchableText(self):
         proxy=ReflectoFile(("reflecto.jpg",)).__of__(self.reflector)
