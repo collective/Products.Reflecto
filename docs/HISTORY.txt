@@ -4,6 +4,8 @@ Changelog
 3.0.7 - unreleased
 ------------------
 
+- Add compatibility with Plone 5 and 5.1.
+  [jakob, pbauer]
 
 
 3.0.6 - June 5, 2014
@@ -140,7 +142,7 @@ Changelog
   only falling back to the system mimetype registry if the tool can
   not identify the file.
   [wichert]
- 
+
 - Set the Content-Type header correctly for file downloads.
   [wichert]
 
@@ -160,7 +162,7 @@ Changelog
 
 - Make Reflecto an ATCT content types to make it integrate better with
   Plone. This was triggered by Reflecto instances inheriting the excludeFromNav
-  data from their parent which made them not appear in the site navigation 
+  data from their parent which made them not appear in the site navigation
   for mysterious reasons.
   [wichert]
 
@@ -238,7 +240,7 @@ Changelog
 
 - Updated @@index view mockup registration in directory tests for Plone 3.0
   [mj]
-  
+
 - Fixed contents tab for Plone 3.0
   [mj]
 
@@ -253,5 +255,5 @@ Changelog
 1.0 (Released 2007/06/27)
 -------------------------
 
-- Initial release 
+- Initial release
   [mj]
