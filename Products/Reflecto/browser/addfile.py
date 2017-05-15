@@ -1,18 +1,12 @@
 from zope.interface import Interface
 from zope import schema
-try:
-    from zope.app.i18n import ZopeMessageFactory as _
-except ImportError:
-    from zope.i18nmessageid import ZopeMessageFactory as _
+from zope.i18nmessageid import ZopeMessageFactory as _
 from Products.CMFCore.utils import getToolByName
 from Products.Reflecto.formlib.interfaces import INamedFile
 from Products.Reflecto.formlib.file import NamedFileWidget
 from zope.formlib import form
-try:
-    from Products.Five.formlib.formbase import FormBase
-except ImportError:
-    from five.formlib.formbase import FormBase
-from zope.app.form.interfaces import WidgetInputError
+from five.formlib.formbase import FormBase
+from zope.formlib.interfaces import WidgetInputError
 from zope.schema.interfaces import ValidationError
 import os
 import os.path

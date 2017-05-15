@@ -4,7 +4,7 @@
  <property name="title">ReflectoDirectory</property>
  <property
      name="description">A Reflecto Directory</property>
- <property name="content_icon">folder_icon.gif</property>
+ <property name="content_icon">folder_icon.png</property>
  <property name="content_meta_type">ReflectoDirectory</property>
  <property name="product">Reflecto</property>
  <property name="factory">addReflectoDirectory</property>

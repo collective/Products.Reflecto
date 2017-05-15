@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<registry>
+  <record name="plone.types_use_view_action_in_listings">
+    <value purge="False">
+      <element>ReflectoFile</element>
+    </value>
+  </record>
+  <record name="plone.displayed_types">
+    <value purge="False">
+      <element>Reflector</element>
+      <element>ReflectoFile</element>
+      <element>ReflectoDirectory</element>
+    </value>
+  </record>
+</registry>

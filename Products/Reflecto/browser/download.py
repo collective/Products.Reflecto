@@ -1,6 +1,6 @@
 from tempfile import TemporaryFile
 from zipfile import ZipFile
-from zope.publisher.browser import BrowserView
+from Products.Five.browser import BrowserView
 from Products.Reflecto.interfaces import IReflectoDirectory
 from Products.Reflecto.interfaces import IReflectoFile
 from Products.Reflecto.streaming import FileIterator

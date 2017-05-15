@@ -4,7 +4,7 @@
  <property name="title">Reflecto File</property>
  <property
     name="description">A Reflecto file.</property>
- <property name="content_icon">file_icon.gif</property>
+ <property name="content_icon">file_icon.png</property>
  <property name="content_meta_type">RelfectoFile</property>
  <property name="product">Reflecto</property>
  <property name="factory">addReflectoFile</property>

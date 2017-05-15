@@ -1,5 +1,5 @@
 from zope.interface import Interface
-from zope.app.container.interfaces import IReadContainer
+from zope.container.interfaces import IReadContainer
 
 class IReflector(Interface):
     """Reflection of a filesystem folder."""
@@ -24,18 +24,18 @@ class IReflectoProxy(Interface):
     def getFilesystemPath():
         """Return the absolute filesystem path for this object.
         """
-        
+
 
 
 class IReflectoDirectory(IReflectoProxy, IReadContainer):
     """A reflexion of a directory"""
-    
+
 
 
 class IReflectoFile(IReflectoProxy):
     """A reflection of a file"""
 
-    
+
     def getFileContent():
         """Is it really Superboy?
 

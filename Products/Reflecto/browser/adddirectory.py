@@ -5,17 +5,11 @@ from zope.interface import Interface
 from zope.formlib import form
 from zope.schema.interfaces import ValidationError
 
-from zope.app.form.interfaces import WidgetInputError
-try:
-    from zope.app.i18n import ZopeMessageFactory as _
-except ImportError:
-    from zope.i18nmessageid import ZopeMessageFactory as _
+from zope.formlib.interfaces import WidgetInputError
+from zope.i18nmessageid import ZopeMessageFactory as _
 
 from Products.CMFCore.utils import getToolByName
-try:
-    from Products.Five.formlib.formbase import FormBase
-except ImportError:
-    from five.formlib.formbase import FormBase
+from five.formlib.formbase import FormBase
 
 
 class IDirectoryAddForm(Interface):
@@ -55,6 +49,6 @@ class DirectoryAddForm(FormBase):
 
         pt=getToolByName(self.context, "plone_utils")
         pt.addPortalMessage(_(u'New directory created'))
-        
+
         return self.request.response.redirect(
             self.context[name].absolute_url())

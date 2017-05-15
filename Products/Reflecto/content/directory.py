@@ -28,8 +28,9 @@ from webdav.Collection import Collection
 from zope.event import notify
 from zope.interface import implements, Interface
 from zope.component import queryMultiAdapter
-from zope.app.container.contained import notifyContainerModified
-from zope.app.container.contained import ObjectMovedEvent, ObjectRemovedEvent
+from zope.container.contained import notifyContainerModified
+from zope.lifecycleevent import ObjectMovedEvent
+from zope.lifecycleevent import ObjectRemovedEvent
 from zope.lifecycleevent import ObjectCopiedEvent
 
 from Products.CMFCore.DynamicType import DynamicType
@@ -59,7 +60,7 @@ def _getViewFor(context):
 
 class ReflectoDirectoryBase:
     implements(IReflectoDirectory, IConstrainTypes)
-    
+
     security = ClassSecurityInfo()
 
     isPrincipiaFolderish = True
@@ -94,13 +95,13 @@ class ReflectoDirectoryBase:
     def __getitem__(self, key):
         if not self.has_key(key):
             raise KeyError(key)
-        
+
         filename = os.path.join(self.getFilesystemPath(), key)
         if os.path.isdir(filename):
             class_ = ReflectoDirectory
         else:
             class_ = ReflectoFile
-            
+
         reflectorpath = self.getPathOfReflectoParent()
         path = self.getPathToReflectoParent() + (key,)
         obj = class_(path, reflectorpath).__of__(self)
@@ -109,7 +110,7 @@ class ReflectoDirectoryBase:
             addMarkerInterface(obj, ILifeProxy)
 
         return obj
-    
+
 
     def __iter__(self):
         try:
@@ -117,7 +118,7 @@ class ReflectoDirectoryBase:
         except AttributeError:
             # No acquisition context, fail silently
             raise StopIteration
-        
+
         try:
             for name in os.listdir(path):
                 full_path = os.path.join(path, name)
@@ -132,31 +133,31 @@ class ReflectoDirectoryBase:
             if e.errno==errno.ENOENT:
                 raise StopIteration
             raise
-            
+
     def keys(self):
         return list(self.__iter__())
-            
+
     def has_key(self, key):
         if not isinstance(key, basestring):
             return False
 
         if not self.acceptableFilename(key):
             return False
-        
+
         try:
             filename = os.path.join(self.getFilesystemPath(), key)
         except AttributeError:
             # No acquisition context, fail silently
             return False
-            
+
         return os.path.exists(filename)
-    
+
     # Acquisition wrappers don't support the __iter__ slot, so re-implement
     # iteritems to call __iter__ directly.
     def iteritems(self):
         for k in self.__iter__():
             yield (k, self[k])
-    
+
 ########################################################################
 # ObjectManager implementation
     security.declareProtected(access_contents_information,
@@ -203,14 +204,14 @@ class ReflectoDirectoryBase:
 
         dir = self.aq_inner[id]
         dir.indexObject()
-    
+
     def _checkId(self, id, allow_dup=0):
         if not allow_dup and self.has_key(id):
             raise BadRequestException, ('The id "%s" is invalid--'
                                         'it is already in use.' % id)
         if not self.acceptableFilename(id):
             raise BadRequestException, ('The id "%s" is invalid.' % id)
-    
+
     def _verifyObjectPaste(self, obj, validate_src=1):
         # validate_src ignored
         assert isinstance(obj, BaseProxy)
@@ -221,7 +222,7 @@ class ReflectoDirectoryBase:
         sman = getSecurityManager()
         if not sman.checkPermission(AddFilesystemObject, self):
             raise CopyError, 'Insufficient Privileges'
-     
+
 ########################################################################
 # IConstrainTypes implementation
 
@@ -239,31 +240,31 @@ class ReflectoDirectoryBase:
 
     def allowedContentTypes(self):
         return []
-    
+
 ########################################################################
 # Deletion support
 
     security.declareProtected(DeleteObjects, 'manage_delObjects')
     def manage_delObjects(self, ids=[], REQUEST=None):
         """Delete reflected files or directories
-        
+
         The objects specified in 'ids' get deleted. This emulates the
         ObjectManager interface enough to support deletion in Plone only.
         When file removal fails, errors are communicated through the return
         of the successful ids and the IStatusMessage utility
-        
+
         """
         if type(ids) is StringType:
             ids = [ids]
         if not ids:
             raise ValueError('No items specified')
-        
+
         # To avoid inconsistencies, first test file availability
         for id in ids:
             if not self.has_key(id):
                 raise KeyError(id)
             notify(ObjectWillBeRemovedEvent(self[id], self, id))
-            
+
         problem_ids = []
         path = self.getFilesystemPath()
         for id in ids:
@@ -277,38 +278,38 @@ class ReflectoDirectoryBase:
                 notify(ObjectRemovedEvent(ob, self, id))
             except OSError:
                 problem_ids.append(id)
-                    
+
         if problem_ids:
             sm = IStatusMessage(getattr(self, 'REQUEST', None), None)
             if sm is not None:
                 sm.addStatusMessage(
                     'Failed to remove some files: %s' % problem_ids, 'stop')
-                
+
         if set(ids) - set(problem_ids):
             indexview = self.unrestrictedTraverse('@@index')
             indexview.index()
             notifyContainerModified(self)
-        
+
         return problem_ids or None # None expected by webdav on success
-    
+
 ########################################################################
 # Renaming support
 
     security.declareProtected(copy_or_move, 'manage_renameObjects')
     def manage_renameObjects(self, ids=[], new_ids=[]):
         """Rename reflected files or directories
-        
-        The objects specified in 'ids' get renamed to 'new_ids'. This emulates 
+
+        The objects specified in 'ids' get renamed to 'new_ids'. This emulates
         the CopyContainer interface enough to support renaming in Plone only.
         When file renaming fails, errors are communicated through the return
         of the successful ids and the IStatusMessage utility
-        
+
         """
         if len(ids) != len(new_ids):
             raise BadRequest('Please rename each listed object.')
         if not ids:
             raise ValueError('No items specified')
-        
+
         # To avoid inconsistencies, first test file availability
         for old, new in zip(ids, new_ids):
             if not self.has_key(old):
@@ -316,7 +317,7 @@ class ReflectoDirectoryBase:
             if not self.acceptableFilename(new) or self.has_key(new):
                 raise CopyError, 'Invalid Id'
             notify(ObjectWillBeMovedEvent(self[old], self, old, self, new))
-            
+
         problem_ids = []
         path = self.getFilesystemPath()
         for id in ids:
@@ -325,32 +326,32 @@ class ReflectoDirectoryBase:
                 notify(ObjectMovedEvent(self[new], self, old, self, new))
             except OSError:
                 problem_ids.append(old)
-                    
+
         if problem_ids:
             sm = IStatusMessage(getattr(self, 'REQUEST', None), None)
             if sm is not None:
                 sm.addStatusMessage(
                     'Failed to rename some files: %s' % problem_ids, 'stop')
-                
+
         if set(ids) - set(problem_ids):
             indexview = self.unrestrictedTraverse('@@index')
             indexview.index()
             notifyContainerModified(self)
-        
+
         return list(set(ids) - set(problem_ids))
-    
+
 ########################################################################
 # Copying support
 # This re-implements much of CopyContainer, and is only intended to work
 # with Plone
-    
+
     def cb_dataValid(self):
         try:
             _cb_decode(self.REQUEST['__cp'])
         except:
             return False
         return True
-    
+
     def _generate_copy_id(self, id):
         n = 0
         old = id
@@ -363,24 +364,24 @@ class ReflectoDirectoryBase:
                 return id
             id = 'copy%s_of_%s' % (n and n + 1 or '', old)
             n += 1
-            
+
     def _generate_cp_cookie(self, ids, flag, REQUEST=None):
         if type(ids) is StringType:
             ids=[ids]
-            
+
         try:
             oblist = [Moniker(self[id]).dump() for id in ids]
         except KeyError:
             # Plone expects attribute errors here
             raise AttributeError
         cp = _cb_encode((flag, oblist))
-        
+
         if REQUEST is not None:
             resp = REQUEST['RESPONSE']
             resp.setCookie('__cp', cp, path=cookie_path(REQUEST))
             REQUEST['__cp'] = cp
         return cp
-    
+
     security.declareProtected(copy_or_move, 'manage_copyObjects')
     def manage_copyObjects(self, ids=None, REQUEST=None, RESPONSE=None):
         """Put a reference to the objects named in ids in the clip board"""
@@ -390,21 +391,21 @@ class ReflectoDirectoryBase:
     def manage_cutObjects(self, ids, REQUEST=None):
         """Put a reference to the objects named in ids in the clip board"""
         return self._generate_cp_cookie(ids, 1, REQUEST)
-    
+
     security.declareProtected(copy_or_move, 'manage_pasteObjects')
     def manage_pasteObjects(self, cp):
         """Paste previously copied objects into the current object."""
         op, mdatas = _cb_decode(cp)
         COPY = op == 0 # Otherwise its a paste operation
-        
+
         # Copy or paste always fails without write permission here
         sman = getSecurityManager()
         if not sman.checkPermission(AddFilesystemObject, self):
             raise CopyError, 'Insufficient Privileges'
-        
+
         oblist = []
         app = self.getPhysicalRoot()
-        
+
         # Loading and security checks
         for mdata in mdatas:
             m = loadMoniker(mdata)
@@ -437,7 +438,7 @@ class ReflectoDirectoryBase:
             result.append(dict(id=old, new_id=new))
             oldpath = ob.getFilesystemPath()
             newpath = os.path.join(path, new)
-            
+
             if COPY:
                 try:
                     if IReflectoDirectory.providedBy(ob):
@@ -452,14 +453,14 @@ class ReflectoDirectoryBase:
                 # paste/move
                 oldparent = aq_parent(aq_inner(ob))
                 notify(ObjectWillBeMovedEvent(ob, oldparent, old, self, new))
-                
+
                 if aq_base(self) is aq_base(oldparent):
                     # No need to move from self to self
                     result[-1]['new_id'] = old
                     # Original CopyContainer does emit events for this case
                     notify(ObjectMovedEvent(ob, self, old, self, old))
                     continue
-                
+
                 try:
                     shutil.move(oldpath, newpath)
                     indexview = oldparent.unrestrictedTraverse('@@index')
@@ -478,26 +479,26 @@ class ReflectoDirectoryBase:
                         except EnvironmentError:
                             pass # Really weird access issues, time to bail
                     problem_ids.append(result.pop())
-                
+
         if problem_ids:
             sm = IStatusMessage(getattr(self, 'REQUEST', None), None)
             if sm is not None:
                 sm.addStatusMessage(
                     'Failed to copy or paste some files: %s' % problem_ids,
                     'stop')
-                
+
         if result:
             indexview = self.unrestrictedTraverse('@@index')
             indexview.index()
             notifyContainerModified(self)
-        
+
         return result
 
 # mix in selected methods from DictMixin
 # We don't want *everything* because some cause problems for us
 for m in ('__contains__', 'iterkeys', 'itervalues', 'values', 'items', 'get'):
     setattr(ReflectoDirectoryBase, m, getattr(DictMixin, m).im_func)
-    
+
 InitializeClass(ReflectoDirectoryBase)
 
 class ReflectoDirectory(ReflectoDirectoryBase, BaseMove, Collection, BaseProxy, DynamicType):
@@ -535,28 +536,28 @@ class ReflectoDirectory(ReflectoDirectoryBase, BaseMove, Collection, BaseProxy, 
         """ Returns the default view even if index_html is overridden.
         """
         return self()
-    
+
     def __bobo_traverse__(self, REQUEST, name):
         try:
             return self[name]
         except KeyError:
             pass
-            
+
         if hasattr(aq_base(self), name):
             return getattr(self, name)
-        
+
         # webdav
         method = REQUEST.get('REQUEST_METHOD', 'GET').upper()
         if (method not in ('GET', 'POST') and not
               isinstance(REQUEST.RESPONSE, xmlrpc.Response) and
               REQUEST.maybe_webdav_client and not REQUEST.path):
             return ReflectoNullResource(self, name, REQUEST).__of__(self)
-        
+
         # try to find a view
-        subobject = queryMultiAdapter((self, REQUEST), Interface, name)                
+        subobject = queryMultiAdapter((self, REQUEST), Interface, name)
         if subobject is not None:
             return subobject.__of__(self)
-        
+
         # finally try acquired objects
         return getattr(self, name)
 
@@ -565,7 +566,7 @@ InitializeClass(ReflectoDirectory)
 
 class ReflectoNullResource(NullResource):
     security = ClassSecurityInfo()
-    
+
     security.declarePublic('PUT')
     def PUT(self, REQUEST, RESPONSE):
         """Create a new non-collection resource.
@@ -576,22 +577,22 @@ class ReflectoNullResource(NullResource):
         parent = self.__parent__
 
         # Locking not implemented.
-        
+
         if not self.acceptableFilename(name):
             raise BadRequestException, ('The id "%s" is invalid.' % name)
-        
+
         reflectopath = parent.getPathOfReflectoParent()
         path = parent.getPathToReflectoParent() + (name,)
         obj = ReflectoFile(path, reflectopath).__of__(parent)
 
         if self.getReflector().getLife():
             addMarkerInterface(obj, ILifeProxy)
-        
+
         # Security is checked here.
         obj.PUT(REQUEST, RESPONSE)
 
         RESPONSE.setStatus(201)
         RESPONSE.setBody('')
         return RESPONSE
-    
+
 InitializeClass(ReflectoNullResource)

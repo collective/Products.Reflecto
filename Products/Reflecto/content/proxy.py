@@ -18,8 +18,8 @@ from OFS.SimpleItem import Item
 
 from zope.interface import implements
 from zope.event import notify
-from zope.app.container.contained import ObjectMovedEvent
-from zope.app.container.contained import notifyContainerModified
+from zope.container.contained import ObjectMovedEvent
+from zope.container.contained import notifyContainerModified
 from zope.lifecycleevent import ObjectCopiedEvent
 from OFS.event import ObjectWillBeMovedEvent, ObjectClonedEvent
 from zExceptions import MethodNotAllowed
@@ -55,7 +55,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
     implements(IReflectoProxy, IDublinCore, ICatalogableDublinCore)
 
     security = ClassSecurityInfo()
-    
+
     _path = ()
 
     def __init__(self, path, reflectorpath=None):
@@ -81,7 +81,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
                 continue
             if IReflector.providedBy(parent):
                 return parent
-            
+
         raise RuntimeError('Reflecto object cannot exist outside an IReflector '
                            'acquisition chain')
 
@@ -113,7 +113,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
             return cmp(self.getPhysicalPath(), other.getPhysicalPath())
         except AttributeError:
             return cmp(id(self), id(other))
-        
+
     def SearchableText(self):
         text = [self.Title()]
         # Also index the filename separately without extension and spilt on dot.
@@ -130,7 +130,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
         if self.__dict__.get('_owner', _mark) is not _mark:
             del self._owner
 
-        
+
 
 ########################################################################
 # IDublinCore implementation
@@ -231,7 +231,7 @@ class BaseProxy(CMFCatalogAware, Item, Acquisition.Implicit):
 
     def get_size(self):
         return self.getStatus()[ST_SIZE]
-    
+
     @property
     def _p_mtime(self):
         # used by webdav HEAD
@@ -321,16 +321,16 @@ class BaseMove:
                 raise Locked, 'Destination is locked.'
 
         self._notifyOfCopyTo(parent, op=0)
-        
+
         #### This part is reflecto specific
         if existing:
             object=getattr(parent, name)
             self.dav__validate(object, 'DELETE', REQUEST)
             parent.manage_delObjects([name])
-        
+
         oldpath = self.getFilesystemPath()
         newpath = os.path.join(parent.getFilesystemPath(), name)
-        
+
         if IReflectoDirectory.providedBy(self):
             if depth=='0':
                 os.mkdir(newpath, 0775)
@@ -448,12 +448,12 @@ class BaseMove:
             object=parent[name]
             self.dav__validate(object, 'DELETE', REQUEST)
             parent.manage_delObjects([name])
-            
+
         os.rename(self.getFilesystemPath(), os.path.join(parent.getFilesystemPath(), name))
         ob = parent[name]
         ob.indexObject()
         ####
-        
+
         notify(ObjectMovedEvent(ob, orig_container, orig_id, parent, name))
         notifyContainerModified(orig_container)
         if aq_base(orig_container) is not aq_base(parent):
@@ -464,6 +464,6 @@ class BaseMove:
             RESPONSE.setHeader('Location', dest)
         RESPONSE.setBody('')
         return RESPONSE
-    
+
 
 InitializeClass(BaseMove)
