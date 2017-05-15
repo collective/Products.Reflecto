@@ -1,6 +1,6 @@
 from zope.interface import implements
 from zope.app.file.file import File
-from zope.app.form.browser.textwidgets import FileWidget
+from zope.formlib.textwidgets import FileWidget
 from Products.Reflecto.formlib.interfaces import INamedFile
 
 class NamedFile(File):

@@ -20,7 +20,8 @@
         <a href=""
            class="link-parent"
            tal:define="template_id template/getId;
-                       parent_url python:here.navigationParent(here, template_id)"
+                       parent context_state/parent;
+                       parent_url python:parent.absolute_url()"
            tal:condition="parent_url"
            tal:attributes="href parent_url"
            i18n:translate="go_to_parent_url">
@@ -44,7 +45,7 @@
                             batch python: (over_limit and folderContents[:limit_display]) or folderContents;
                             isAnon context/@@plone_portal_state/anonymous;
                             show_about python:not isAnon or site_properties.allowAnonymousViewAbout;
-                            getIcon nocall:context/@@plone/getIcon">
+                            getIcon nocall:context/@@plone_layout/getIcon">
         <tal:listing condition="batch">
 
             <!-- Navigation -->

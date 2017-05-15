@@ -28,5 +28,7 @@ setup(name='Products.Reflecto',
           'setuptools',
           'zope.app.file',
           'zope.app.container',
+          'zope.formlib',
+          'five.formlib',
       ]
       )
