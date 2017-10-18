@@ -10,7 +10,7 @@
 
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
-        <h1 tal:define="object_title context/@@plone_context_state/object_title" 
+        <h1 tal:define="object_title context/@@plone_context_state/object_title"
             tal:content="object_title" class="documentFirstHeading">
             Title or id
         </h1>
@@ -44,7 +44,7 @@
                             over_limit python: limit_display and len(folderContents) > limit_display;
                             batch python: (over_limit and folderContents[:limit_display]) or folderContents;
                             isAnon context/@@plone_portal_state/anonymous;
-                            show_about python:not isAnon or site_properties.allowAnonymousViewAbout;
+                            show_about python:not isAnon or context.portal_registry['plone.allow_anon_views_about'];
                             getIcon nocall:context/@@plone_layout/getIcon">
         <tal:listing condition="batch">
 
