@@ -19,8 +19,7 @@
          tal:define="b_size b_size|request/b_size|python:100;
                      view_title view_title|request/view_title|string:;
                      batch python:here.getReflector().getLife() and path('here/@@getFolderContents') or here.getFolderContents(None, batch=True);
-                     full_view full_view|request/full_view|python:True;
-                     getIcon nocall:context/@@plone/getIcon">
+                     full_view full_view|request/full_view|python:True">
 
       <form name="folderContentsForm"
             method="post"
@@ -28,12 +27,12 @@
             tal:define="here_url context/@@plone_context_state/object_url"
             tal:attributes="action here_url">
 
-        <input tal:replace="structure context/@@authenticator/authenticator" /> 
-        
+        <input tal:replace="structure context/@@authenticator/authenticator" />
+
         <div tal:replace="structure provider:plone.abovecontenttitle" />
 
         <h1>
-          <tal:block replace="structure python:getattr(here, here.getIcon(1)).tag(alt=here.portal_type)"/>
+
           <span tal:define="putils context/plone_utils"
                 tal:content="python: view_title and here.utranslate(view_title) or putils.pretty_title_or_id(here)" tal:omit-tag="">Directory Id</span>
         </h1>
@@ -46,7 +45,8 @@
 
             <a href=""
                class="link-parent"
-               tal:define="parent_url python:here.navigationParent(here, fallThroughDefaultPage = False, checkPermissions = ['List folder contents'])"
+               tal:define="parent context/@@plone_context_state/parent;
+                           parent_url python:parent.absolute_url()"
                tal:condition="parent_url"
                tal:attributes="href string:${parent_url}/folder_contents"
                i18n:translate="go_to_parent_url">
@@ -127,7 +127,6 @@
                                    item_description     item/Description;
                                    item_type            item/portal_type;
                                    item_size            item/getObjSize;
-                                   item_icon python:getIcon(item).html_tag();
                                    item_modified        item/ModificationDate;
                                    normalizeString nocall:context/@@plone/normalizeString;
                                    item_type_class      python:'visualIcon contenttype-' + normalizeString(item_type);
@@ -157,7 +156,7 @@
                     <td tal:define="url python:test(item_use_view, item_url+'/view',
                                     test(item_folderish, item_url+'/folder_contents', item_url));">
                         <span tal:attributes="class item_type_class">
-                        <img tal:replace="structure item_icon"/>
+
                         <a href="#" tal:attributes="href  url;
                                                     title string: $item_type: $item_description;">
                             <strong tal:omit-tag="python:not isBrowserDefault">
@@ -180,7 +179,7 @@
                       <span tal:condition="python:item_size>0"
                             tal:content="item_size"> size </span>
                     </td>
-                    <td tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime" 
+                    <td tal:define="toLocalizedTime nocall:context/@@plone/toLocalizedTime"
                         tal:content="python:toLocalizedTime(item_modified, long_format=1)">
                         08/19/2001 03:01 AM
                     </td>
